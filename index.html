@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BUNKER CAFÉ — POS (Offline)</title>
+  <title>BUNKER CAFÉ — POS (Final)</title>
 
   <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,7 +16,7 @@
   /* Palette (change here to restyle the whole app) */
   --cafe-brown: #3b2f2f;
   --cafe-cream: #fff8ef;
-  --accent: #ff6fa8;        /* pink-ish accent */
+  --accent: #ffb86b;        /* gold-ish accent */
   --muted: #7a6b65;
   --fg: #2b2b2b;            /* main text color */
   --inverse-fg: #f3efe9;    /* text on darker surfaces */
@@ -72,9 +72,9 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
 .btn {
   display:inline-flex; align-items:center; gap:8px;
   padding:10px 14px; border-radius:10px; border:0; cursor:pointer;
-  background: linear-gradient(90deg, var(--accent), #ff9fc6);
+  background: linear-gradient(90deg, var(--accent), #ffd19a);
   color: var(--inverse-fg); font-weight:600;
-  box-shadow: 0 8px 20px rgba(255,111,168,0.12);
+  box-shadow: 0 8px 20px rgba(255,111,168,0.08);
 }
 .btn:active { transform: translateY(1px); }
 
@@ -110,11 +110,11 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
 .visually-hidden { position: absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px, 1px, 1px, 1px); white-space:nowrap; }
 
 /* Tiny responsive tweak */
-@media (max-width:480px) {
-  .card { padding:12px; border-radius:10px; }
-  .btn { padding:8px 12px; border-radius:8px; }
+@media (max-width:980px) {
+  .grid-cols-3 { grid-template-columns: 1fr !important; }
+  main { padding:12px; }
+  nav { overflow:auto; white-space:nowrap; }
 }
-
   </style>
 </head>
 <body class="light min-h-screen font-sans">
@@ -125,8 +125,7 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
       <div id="logoArea" class="w-12 h-12 rounded-full bg-[#f6d7b0] flex items-center justify-center text-[#3b2f2f] font-bold">☕</div>
       <div>
         <h1 id="cafeName" class="text-xl font-extrabold">BUNKER CAFÉ</h1>
-        <div class="text-sm opacity-90">— Designed with passion by Muawviz Khan | 📞 0325-8575790 —
-“Crafted with class, delivered with pride.”</div>
+        <div class="text-sm opacity-90">— Designed with passion by Muawviz Khan | 📞 0325-8575790 —</div>
       </div>
     </div>
 
@@ -142,12 +141,7 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
   <nav class="flex gap-2 p-3 sticky top-0 bg-[color:var(--cafe-cream)] z-10 no-print">
     <a href="#billing" class="navlink px-3 py-2 rounded bg-[#d9c2a8]">Billing</a>
     <a href="#menu" class="navlink px-3 py-2 rounded">Menu</a>
-    <a href="#morning" class="navlink px-3 py-2 rounded">Morning</a>
-    <a href="#evening" class="navlink px-3 py-2 rounded">Evening</a>
-    <a href="#daily" class="navlink px-3 py-2 rounded">Daily</a>
-    <a href="#weekly" class="navlink px-3 py-2 rounded">Weekly</a>
-    <a href="#monthly" class="navlink px-3 py-2 rounded">Monthly</a>
-    <a href="#category" class="navlink px-3 py-2 rounded">Category</a>
+    <a href="#reports" class="navlink px-3 py-2 rounded">Reports</a>
     <a href="#history" class="navlink px-3 py-2 rounded">History</a>
     <div class="ml-auto flex gap-2">
       <button id="exportAllCSV" class="px-3 py-2 bg-[#3b2f2f] text-white rounded">Export CSV</button>
@@ -209,7 +203,7 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
       </div>
     </section>
 
-    <!-- Menu Page -->
+    <!-- Menu Page (admin) -->
     <section id="menu" class="page">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-2xl font-bold">Menu Management</h2>
@@ -221,73 +215,73 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
       <div id="menuTable" class="grid grid-cols-3 gap-4"></div>
     </section>
 
-    <!-- Morning Report -->
-    <section id="morning" class="page">
+    <!-- Reports -->
+    <section id="reports" class="page">
       <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Morning Shift Report</h2>
+        <h2 class="text-2xl font-bold">Reports</h2>
         <div class="flex gap-2">
-          <button id="morningExportCSV" class="px-3 py-2 rounded bg-[color:var(--cafe-brown)] text-white">Export CSV</button>
-          <button id="morningExportPDF" class="px-3 py-2 rounded bg-[color:var(--accent)] text-white">Export PDF</button>
+          <button id="reportsExportPDF" class="px-3 py-2 rounded bg-[color:var(--accent)] text-white">Export All PDF</button>
+          <button id="reportsExportCSV" class="px-3 py-2 rounded bg-[color:var(--cafe-brown)] text-white">Export All CSV</button>
+          <button id="reportsClearAll" class="px-3 py-2 rounded bg-red-500 text-white">Clear All Sales</button>
         </div>
       </div>
-      <div id="morningReport" class="space-y-3"></div>
-    </section>
 
-    <!-- Evening Report -->
-    <section id="evening" class="page">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Evening Shift Report</h2>
-        <div class="flex gap-2">
-          <button id="eveningExportCSV" class="px-3 py-2 rounded bg-[color:var(--cafe-brown)] text-white">Export CSV</button>
-          <button id="eveningExportPDF" class="px-3 py-2 rounded bg-[color:var(--accent)] text-white">Export PDF</button>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="card">
+          <div class="flex justify-between items-center">
+            <div><h3 class="font-semibold">Daily</h3><div class="text-sm small">Today breakdown</div></div>
+            <div class="flex gap-2">
+              <button id="dailyExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
+              <button id="dailyExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
+              <button id="dailyClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
+            </div>
+          </div>
+          <div id="dailyReport" class="mt-3"></div>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center">
+            <div><h3 class="font-semibold">Weekly</h3><div class="text-sm small">Week summary</div></div>
+            <div class="flex gap-2">
+              <button id="weeklyExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
+              <button id="weeklyExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
+              <button id="weeklyClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
+            </div>
+          </div>
+          <div id="weeklyReport" class="mt-3"></div>
+        </div>
+
+        <div class="card">
+          <div class="flex justify-between items-center">
+            <div><h3 class="font-semibold">Monthly</h3><div class="text-sm small">Month summary</div></div>
+            <div class="flex gap-2">
+              <button id="monthlyExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
+              <button id="monthlyExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
+              <button id="monthlyClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
+            </div>
+          </div>
+          <div id="monthlyReport" class="mt-3"></div>
+        </div>
+
+        <div class="card col-span-2">
+          <div class="flex justify-between items-center">
+            <div><h3 class="font-semibold">Category & Item-wise</h3><div class="text-sm small">Totals per category and per item (click item to see sales)</div></div>
+            <div class="flex gap-2">
+              <button id="categoryExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
+              <button id="categoryExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
+              <button id="categoryClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
+            </div>
+          </div>
+          <div id="categoryReport" class="mt-3 grid grid-cols-3 gap-3"></div>
         </div>
       </div>
-      <div id="eveningReport" class="space-y-3"></div>
     </section>
 
-    <!-- Daily / Weekly / Monthly / Category / History -->
-    <section id="daily" class="page">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Daily Report</h2>
-        <div class="flex gap-2">
-          <button id="dailyExportCSV" class="px-3 py-2 rounded bg-[color:var(--cafe-brown)] text-white">Export CSV</button>
-          <button id="dailyExportPDF" class="px-3 py-2 rounded bg-[color:var(--accent)] text-white">Export PDF</button>
-        </div>
-      </div>
-      <div id="dailyReport"></div>
-    </section>
-
-    <section id="weekly" class="page">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Weekly Report</h2>
-        <div class="flex gap-2">
-          <button id="weeklyExportCSV" class="px-3 py-2 rounded bg-[color:var(--cafe-brown)] text-white">Export CSV</button>
-          <button id="weeklyExportPDF" class="px-3 py-2 rounded bg-[color:var(--accent)] text-white">Export PDF</button>
-        </div>
-      </div>
-      <div id="weeklyReport"></div>
-    </section>
-
-    <section id="monthly" class="page">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Monthly Report</h2>
-        <div class="flex gap-2">
-          <button id="monthlyExportCSV" class="px-3 py-2 rounded bg-[color:var(--cafe-brown)] text-white">Export CSV</button>
-          <button id="monthlyExportPDF" class="px-3 py-2 rounded bg-[color:var(--accent)] text-white">Export PDF</button>
-        </div>
-      </div>
-      <div id="monthlyReport"></div>
-    </section>
-
-    <section id="category" class="page">
-      <h2 class="text-2xl font-bold mb-3">Category Report</h2>
-      <div id="categoryReport" class="grid grid-cols-3 gap-4"></div>
-    </section>
-
+    <!-- History -->
     <section id="history" class="page">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-2xl font-bold">Sale History (click a date folder)</h2>
-        <div class="text-sm">Click a date to expand sales. View receipts or export date CSV.</div>
+        <div class="text-sm">Click a date to expand sales. Export or clear per date.</div>
       </div>
       <div class="grid grid-cols-4 gap-6">
         <div id="historyDates" class="col-span-1 bg-white p-3 rounded-xl shadow max-h-[60vh] overflow-auto"></div>
@@ -308,10 +302,8 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
       <div id="rtotals" class="mt-2"></div>
       <hr />
       <div class="small mt-2">
-        
         <div>Excellence is not an act, but a habit</div>
-        <div>— Designed with passion by Muawviz Khan | 📞 0325-8575790 —
-“Crafted with class, delivered with pride.”</div>
+        <div>— Designed with passion by Muawviz Khan | 📞 0325-8575790 —</div>
       </div>
       <div style="text-align:center;margin-top:8px;">Thank you! Visit Again</div>
     </div>
@@ -319,7 +311,7 @@ html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial,
 
 <script>
 /* ======================
-   MENU (from photos / provided list)
+   MENU (full list copied)
    ====================== */
 const MENU = [
   { id: 'm1', name: 'Espresso', category: 'Coffee', price: 180 },
@@ -395,15 +387,19 @@ const MENU = [
 
   { id: 'm59', name: 'French Toast', category: 'Breakfast', price: 300 },
 
-  { id: 'm60', name: 'Simple Glazed Donut', category: 'Dessert', price: 250 },
-  { id: 'm61', name: 'Chocolate Sprinkle Donut', category: 'Dessert', price: 250 },
-  { id: 'm62', name: 'Boston Cream Donut', category: 'Dessert', price: 300 },
-  { id: 'm63', name: 'Vanilla Filled Donut', category: 'Dessert', price: 300 },
-  { id: 'm64', name: 'Chocolate Chunk Cookie', category: 'Dessert', price: 300 },
-  { id: 'm65', name: 'Chocolate Fudge Brownie', category: 'Dessert', price: 300 },
-  { id: 'm66', name: 'Cinnamon Roll', category: 'Dessert', price: 400 },
-  { id: 'm67', name: 'Cheesecake (Strawberry Sauce)', category: 'Dessert', price: 400 },
-  { id: 'm68', name: 'Soft Serve Vanilla Cone/Cup', category: 'Dessert', price: 250 },
+  /* Desserts (user requested) */
+  { id: 'd60', name: 'Matilda Cake', category: 'Dessert', price: 500 },
+  { id: 'd61', name: 'New Brownie', category: 'Dessert', price: 250 },
+  { id: 'd62', name: 'New Cookie', category: 'Dessert', price: 250 },
+  { id: 'd63', name: 'D Cookie', category: 'Dessert', price: 450 },
+  { id: 'd64', name: 'Chunk Cookie', category: 'Dessert', price: 350 },
+  { id: 'd65', name: 'Banana Bread (Nuts)', category: 'Dessert', price: 250 },
+  { id: 'd66', name: 'Banana Bread (Without Nuts)', category: 'Dessert', price: 230 },
+
+  /* Water category (single item) */
+  { id: 'w67', name: 'Water', category: 'Water', price: 60 },
+
+  { id: 'm68', name: 'Simple Glazed Donut', category: 'Dessert', price: 250 },
   { id: 'm69', name: 'Chocolate Sundae', category: 'Dessert', price: 350 },
   { id: 'm70', name: 'Caramel Sundae', category: 'Dessert', price: 350 },
   { id: 'm71', name: 'Brownie & Ice Cream', category: 'Dessert', price: 350 }
@@ -413,7 +409,7 @@ const MENU = [
    IndexedDB setup (stores: menuItems, sales, categories, shifts)
    ====================== */
 const DB_NAME = 'bunkerCafeDB';
-const DB_VERSION = 2;
+const DB_VERSION = 5;
 let db = null;
 
 function openDB(){
@@ -423,7 +419,6 @@ function openDB(){
       db = e.target.result;
       if(!db.objectStoreNames.contains('menuItems')) db.createObjectStore('menuItems', { keyPath: 'id' });
       if(!db.objectStoreNames.contains('sales')) db.createObjectStore('sales', { keyPath: 'id' });
-      if(!db.objectStoreNames.contains('categories')) db.createObjectStore('categories', { keyPath: 'id' });
       if(!db.objectStoreNames.contains('shifts')) db.createObjectStore('shifts', { keyPath: 'id' });
     };
     req.onsuccess = (e) => { db = e.target.result; res(db); };
@@ -452,6 +447,22 @@ function dbGetByKey(storeName, key){
   return new Promise((res,rej)=>{
     const t = db.transaction(storeName).objectStore(storeName).get(key);
     t.onsuccess = e=> res(e.target.result);
+    t.onerror = e=> rej(e);
+  });
+}
+function dbDelete(storeName, key){
+  return new Promise((res,rej)=>{
+    const t = db.transaction(storeName, 'readwrite');
+    t.objectStore(storeName).delete(key);
+    t.oncomplete = ()=> res(true);
+    t.onerror = e=> rej(e);
+  });
+}
+function dbClear(storeName){
+  return new Promise((res,rej)=>{
+    const t = db.transaction(storeName, 'readwrite');
+    t.objectStore(storeName).clear();
+    t.oncomplete = ()=> res(true);
     t.onerror = e=> rej(e);
   });
 }
@@ -497,6 +508,10 @@ async function seedMenuIfEmpty(){
   const all = await dbGetAll('menuItems');
   if(all.length === 0){
     for(const m of MENU) await dbPut('menuItems', m);
+  } else {
+    // ensure provided MENU items exist (merge)
+    const existingIds = new Set(all.map(i=>i.id));
+    for(const m of MENU) if(!existingIds.has(m.id)) await dbPut('menuItems', m);
   }
 }
 
@@ -509,6 +524,8 @@ function setupNav(){
       e.preventDefault();
       const hash = a.getAttribute('href').slice(1);
       showPage(hash);
+      document.querySelectorAll('.navlink').forEach(n=>n.classList.remove('bg-[#d9c2a8]'));
+      a.classList.add('bg-[#d9c2a8]');
     });
   });
   window.addEventListener('hashchange', ()=> showPage(location.hash.slice(1) || 'billing'));
@@ -517,13 +534,11 @@ function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const p = document.getElementById(name) || document.getElementById('billing');
   p.classList.add('active');
+  // ensure visible block display
+  document.querySelectorAll('.page').forEach(x=> x.style.display='none');
+  p.style.display='block';
   if(name==='menu') renderMenuTable();
-  if(name==='morning') renderShiftReport('Morning');
-  if(name==='evening') renderShiftReport('Evening');
-  if(name==='daily') renderDaily();
-  if(name==='weekly') renderWeekly();
-  if(name==='monthly') renderMonthly();
-  if(name==='category') renderCategoryReport();
+  if(name==='reports') renderReportsAll();
   if(name==='history') renderHistory();
 }
 
@@ -603,25 +618,52 @@ function setupControls(){
   document.getElementById('menuSearch').addEventListener('input', (e)=>{ renderMenuTable(e.target.value); renderMenuGrid(e.target.value); });
   document.getElementById('billingSearch').addEventListener('input', (e)=> renderMenuGrid(e.target.value));
   document.getElementById('addItemBtn').addEventListener('click', async ()=>{
-    const name = prompt('Item name'); if(!name) return; const price = Number(prompt('Price in PKR')); const category = prompt('Category') || 'Others';
+    const name = prompt('Item name'); if(!name) return; const price = Number(prompt('Price in PKR')); if(isNaN(price)) return alert('Invalid price'); const category = prompt('Category') || 'Others';
     const id = 'm' + uid(); await dbPut('menuItems', { id, name, category, price }); await renderMenuGrid(); await renderMenuTable();
   });
   document.getElementById('clearOrderBtn').addEventListener('click', ()=>{ currentOrder=[]; renderOrder(); });
   document.getElementById('saveShiftNote').addEventListener('click', ()=>{ const note = prompt('Shift note:'); if(!note) return; if(!currentShiftId) return alert('Start the shift first'); dbPut('shifts', { ...currentShiftRecordCache, notes: (currentShiftRecordCache.notes||'') + '\n' + note }); alert('Note saved'); });
 
-  // exports
+  // exports & clears in reports
   document.getElementById('exportAllCSV').addEventListener('click', exportAllCSV);
   document.getElementById('exportAllPDF').addEventListener('click', exportAllPDF);
-  document.getElementById('morningExportCSV').addEventListener('click', ()=> exportShiftCSV('Morning'));
-  document.getElementById('morningExportPDF').addEventListener('click', ()=> exportShiftPDF('Morning'));
-  document.getElementById('eveningExportCSV').addEventListener('click', ()=> exportShiftCSV('Evening'));
-  document.getElementById('eveningExportPDF').addEventListener('click', ()=> exportShiftPDF('Evening'));
   document.getElementById('dailyExportCSV').addEventListener('click', exportDailyCSV);
   document.getElementById('dailyExportPDF').addEventListener('click', exportDailyPDF);
   document.getElementById('weeklyExportCSV').addEventListener('click', exportWeeklyCSV);
   document.getElementById('weeklyExportPDF').addEventListener('click', exportWeeklyPDF);
   document.getElementById('monthlyExportCSV').addEventListener('click', exportMonthlyCSV);
   document.getElementById('monthlyExportPDF').addEventListener('click', exportMonthlyPDF);
+
+  document.getElementById('reportsExportPDF').addEventListener('click', exportAllPDF);
+  document.getElementById('reportsExportCSV').addEventListener('click', exportAllCSV);
+  document.getElementById('reportsClearAll').addEventListener('click', async ()=>{
+    if(!confirm('Clear ALL sales records? This cannot be undone.')) return;
+    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('All sales cleared');
+  });
+
+  document.getElementById('dailyClear').addEventListener('click', async ()=>{
+    if(!confirm('Clear TODAY sales?')) return;
+    const today = new Date().toISOString().slice(0,10);
+    const all = await dbGetAll('sales');
+    for(const s of all) if(s.dateStr===today) await dbDelete('sales', s.id);
+    renderReportsAll(); renderHistory(); alert('Today sales cleared');
+  });
+  document.getElementById('weeklyClear').addEventListener('click', async ()=>{
+    if(!confirm('Clear ALL weekly summary (deletes all sales) ?')) return;
+    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('Weekly cleared (all sales removed)');
+  });
+  document.getElementById('monthlyClear').addEventListener('click', async ()=>{
+    if(!confirm('Clear ALL monthly summary (deletes all sales) ?')) return;
+    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('Monthly cleared (all sales removed)');
+  });
+  document.getElementById('categoryClear').addEventListener('click', async ()=>{
+    if(!confirm('Clear category & item sales (deletes all sales)?')) return;
+    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('Category cleared (all sales removed)');
+  });
+
+  // category export
+  document.getElementById('categoryExportCSV').addEventListener('click', exportCategoryCSV);
+  document.getElementById('categoryExportPDF').addEventListener('click', exportCategoryPDF);
 
   // theme
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
@@ -677,7 +719,7 @@ async function saveSale(){
   if(currentOrder.length===0){ alert('Add items first'); return; }
   const total = currentOrder.reduce((s,i)=>s + i.price*i.qty, 0);
   const now = new Date();
-  const sale = { id: 's'+uid(), dateTime: now.toISOString(), dateStr: now.toISOString().slice(0,10), shift: currentShift, items: currentOrder, total, paymentType, weekNo: weekOfYear(now), monthNo: now.getMonth()+1 };
+  const sale = { id: 's'+uid(), dateTime: now.toISOString(), dateStr: now.toISOString().slice(0,10), shift: currentShift, items: currentOrder.map(x=>({ id:x.id, name:x.name, category:x.category, price:x.price, qty:x.qty })), total, paymentType, weekNo: weekOfYear(now), monthNo: now.getMonth()+1 };
   await dbPut('sales', sale);
   currentOrder = [];
   renderOrder();
@@ -731,8 +773,8 @@ async function renderShiftReport(shift){
   const todayShiftId = `${formatDateISO(new Date())}_${shift}`;
   const shiftRec = await dbGetByKey('shifts', todayShiftId);
   const drawerHtml = shiftRec ? `<div class='mt-2 p-2 bg-white rounded'><div>Opening: ₨ ${shiftRec.openingCash}</div><div>Cash Sales: ₨ ${shiftRec.cashSales||0}</div><div>Closing: ${shiftRec.closingCash ? '₨ ' + shiftRec.closingCash : '—'}</div><div>Discrepancy: ${shiftRec.discrepancy!=null ? '₨ '+shiftRec.discrepancy : '—'}</div></div>` : '';
-  el.innerHTML = `<div class='p-4 bg-white rounded-xl shadow'><div class='font-bold'>Total: <span class='currency'>${total}</span></div><div>Cash: <span class='currency'>${cash}</span> | Online: <span class='currency'>${online}</span></div>${drawerHtml}</div>`;
-  for(const c in categories){ const card=document.createElement('div'); card.className='p-3 bg-white rounded-xl shadow mt-3'; card.innerHTML=`<div class='font-semibold'>${c}</div><div class='currency'>${categories[c]}</div>`; el.appendChild(card); }
+  if(el) el.innerHTML = `<div class='p-4 bg-white rounded-xl shadow'><div class='font-bold'>Total: <span class='currency'>${total}</span></div><div>Cash: <span class='currency'>${cash}</span> | Online: <span class='currency'>${online}</span></div>${drawerHtml}</div>`;
+  for(const c in categories){ const card=document.createElement('div'); card.className='p-3 bg-white rounded-xl shadow mt-3'; card.innerHTML=`<div class='font-semibold'>${c}</div><div class='currency'>${categories[c]}</div>`; if(el) el.appendChild(card); }
 }
 async function renderDaily(){
   const all = await dbGetAll('sales'); const today = new Date().toISOString().slice(0,10); const filtered = all.filter(s=>s.dateStr===today);
@@ -770,16 +812,26 @@ async function renderHistory(){
   const sorted = Object.keys(dates).sort((a,b)=>b.localeCompare(a));
   for(const d of sorted){
     const el = document.createElement('div'); el.className='p-2 cursor-pointer hover:bg-gray-100 rounded flex justify-between items-center';
-    el.innerHTML = `<div>${d}</div><div class="text-sm"><button class="px-2 py-1 bg-[color:var(--cafe-brown)] text-white rounded" data-export-date="${d}">Export</button></div>`;
+    el.innerHTML = `<div>${d}</div><div class="text-sm"><button class="px-2 py-1 bg-[color:var(--cafe-brown)] text-white rounded" data-export-date="${d}">Export</button> <button class="px-2 py-1 bg-red-400 text-white rounded" data-clear-date="${d}">Clear</button></div>`;
     el.addEventListener('click', ()=>{ showDateSales(d, dates[d]); });
     left.appendChild(el);
   }
   left.addEventListener('click', async (ev)=>{
     const btn = ev.target.closest('button[data-export-date]');
-    if(!btn) return;
-    const d = btn.dataset.exportDate;
-    const allSales = (await dbGetAll('sales')).filter(s=> s.dateStr === d);
-    exportSalesArrayToCSV(allSales, `sales_${d}.csv`);
+    if(btn){
+      const d = btn.dataset.exportDate;
+      const allSales = (await dbGetAll('sales')).filter(s=> s.dateStr === d);
+      exportSalesArrayToCSV(allSales, `sales_${d}.csv`);
+      return;
+    }
+    const btn2 = ev.target.closest('button[data-clear-date]');
+    if(btn2){
+      const d = btn2.dataset.clearDate;
+      if(!confirm(`Clear sales for ${d}? This cannot be undone.`)) return;
+      const arr = await dbGetAll('sales');
+      for(const s of arr) if(s.dateStr===d) await dbDelete('sales', s.id);
+      renderReportsAll(); alert(`Sales for ${d} cleared`);
+    }
   });
 }
 function showDateSales(date, sales){
@@ -817,16 +869,45 @@ function exportSalesArrayToCSV(arr, filename='sales.csv'){
   link.click();
 }
 
-async function exportAllCSV(){ const arr = await dbGetAll('sales'); exportSalesArrayToCSV(arr, `sales_all_${new Date().toISOString().slice(0,10)}.csv`); }
-async function exportAllPDF(){ const el = document.createElement('div'); const arr = await dbGetAll('sales'); el.innerHTML = `<h2>All Sales (${arr.length})</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.shift} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_all_${new Date().toISOString().slice(0,10)}.pdf`); }
+async function exportAllCSV(){ const arr = await dbGetAll('sales'); if(arr.length===0) return alert('No sales to export'); exportSalesArrayToCSV(arr, `sales_all_${new Date().toISOString().slice(0,10)}.csv`); }
+async function exportAllPDF(){ const arr = await dbGetAll('sales'); if(arr.length===0) return alert('No sales to export'); const el = document.createElement('div'); el.innerHTML = `<h2>All Sales (${arr.length})</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.shift} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_all_${new Date().toISOString().slice(0,10)}.pdf`); }
 async function exportShiftCSV(shift){ const arr = (await dbGetAll('sales')).filter(s=> s.shift===shift); exportSalesArrayToCSV(arr, `sales_${shift}_${new Date().toISOString().slice(0,10)}.csv`); }
 async function exportShiftPDF(shift){ const arr = (await dbGetAll('sales')).filter(s=> s.shift===shift); const el=document.createElement('div'); el.innerHTML = `<h2>${shift} Sales (${arr.length})</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_${shift}_${new Date().toISOString().slice(0,10)}.pdf`); }
 async function exportDailyCSV(){ const today = new Date().toISOString().slice(0,10); const arr = (await dbGetAll('sales')).filter(s=> s.dateStr===today); exportSalesArrayToCSV(arr, `sales_${today}.csv`); }
-async function exportDailyPDF(){ const today = new Date().toISOString().slice(0,10); const arr = (await dbGetAll('sales')).filter(s=> s.dateStr===today); const el=document.createElement('div'); el.innerHTML = `<h2>Sales ${today}</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.shift} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_${today}.pdf`); }
+async function exportDailyPDF(){ const today = new Date().toISOString().slice(0,10); const arr = (await dbGetAll('sales')).filter(s=> s.dateStr===today); if(arr.length===0) return alert('No sales for today'); const el=document.createElement('div'); el.innerHTML = `<h2>Sales ${today}</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.shift} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_${today}.pdf`); }
 async function exportWeeklyCSV(){ const byWeek = {}; (await dbGetAll('sales')).forEach(s=>{ const key = s.weekNo + '-' + s.dateStr.slice(0,4); byWeek[key] = (byWeek[key]||0) + s.total; }); const rows=[['week','total']]; for(const k in byWeek) rows.push([k,byWeek[k]]); const csv = rows.map(r=> r.map(c=>`"${c}"`).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`weekly_${new Date().toISOString().slice(0,10)}.csv`; link.click(); }
 async function exportWeeklyPDF(){ const byWeek = {}; (await dbGetAll('sales')).forEach(s=>{ const key = s.weekNo + '-' + s.dateStr.slice(0,4); byWeek[key] = (byWeek[key]||0) + s.total; }); const el=document.createElement('div'); el.innerHTML = `<h2>Weekly Summary</h2>` + Object.entries(byWeek).map(([k,v])=> `<div>${k} - ₨ ${v}</div>`).join(''); html2pdf().from(el).save(`weekly_${new Date().toISOString().slice(0,10)}.pdf`); }
 async function exportMonthlyCSV(){ const byMonth={}; (await dbGetAll('sales')).forEach(s=>{ const key = s.monthNo+'-'+new Date(s.dateTime).getFullYear(); byMonth[key] = (byMonth[key]||0) + s.total; }); const rows=[['month','total']]; for(const k in byMonth) rows.push([k,byMonth[k]]); const csv = rows.map(r=> r.map(c=>`"${c}"`).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`monthly_${new Date().toISOString().slice(0,10)}.csv`; link.click(); }
 async function exportMonthlyPDF(){ const byMonth={}; (await dbGetAll('sales')).forEach(s=>{ const key = s.monthNo+'-'+new Date(s.dateTime).getFullYear(); byMonth[key] = (byMonth[key]||0) + s.total; }); const el=document.createElement('div'); el.innerHTML = `<h2>Monthly Summary</h2>` + Object.entries(byMonth).map(([k,v])=> `<div>${k} - ₨ ${v}</div>`).join(''); html2pdf().from(el).save(`monthly_${new Date().toISOString().slice(0,10)}.pdf`); }
+
+/* Category exports */
+async function exportCategoryCSV(){
+  const all = await dbGetAll('sales');
+  const rows=[['category','item','qty','revenue']];
+  const itemTotals = {};
+  for(const s of all) for(const it of s.items){
+    if(!itemTotals[it.id]) itemTotals[it.id]={name:it.name, category:it.category, qty:0, revenue:0};
+    itemTotals[it.id].qty += it.qty;
+    itemTotals[it.id].revenue += it.qty*it.price;
+  }
+  for(const id in itemTotals) rows.push([itemTotals[id].category, itemTotals[id].name, itemTotals[id].qty, itemTotals[id].revenue]);
+  const csv = rows.map(r=> r.map(cell=> `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `category_items_${new Date().toISOString().slice(0,10)}.csv`; link.click();
+}
+async function exportCategoryPDF(){
+  const all = await dbGetAll('sales');
+  const itemTotals = {};
+  for(const s of all) for(const it of s.items){
+    if(!itemTotals[it.id]) itemTotals[it.id]={name:it.name, category:it.category, qty:0, revenue:0};
+    itemTotals[it.id].qty += it.qty;
+    itemTotals[it.id].revenue += it.qty*it.price;
+  }
+  const el=document.createElement('div');
+  el.innerHTML = `<h2>Category & Item Summary</h2>` + Object.values(itemTotals).map(i=> `<div><b>${i.name}</b> (${i.category}) — Qty: ${i.qty} — ₨ ${i.revenue}</div>`).join('');
+  if(Object.keys(itemTotals).length===0) return alert('No item records to export');
+  html2pdf().from(el).save(`category_items_${new Date().toISOString().slice(0,10)}.pdf`);
+}
 
 /* ======================
    Theme
@@ -850,7 +931,26 @@ function toggleTheme(){
    Finish init placeholder
    ====================== */
 document.addEventListener('DOMContentLoaded', () => { /* ready */ });
+
+/* ======================
+   Extra: listen for dynamic item-view clicks (render item-specific sales)
+   ====================== */
+document.addEventListener('click', async (ev)=>{
+  const targ = ev.target.closest('.view-item-sales') || ev.target.closest('.item-view');
+  if(!targ) return;
+  const itemName = decodeURIComponent(targ.dataset.name);
+  const all = await dbGetAll('sales');
+  const related = [];
+  for(const s of all){
+    for(const it of s.items) if(it.name === itemName) related.push({ saleId: s.id, date: s.dateStr, time: formatTime(s.dateTime), qty: it.qty, amount: it.qty*it.price, shift: s.shift });
+  }
+  if(related.length===0) return alert('No sales for this item yet');
+  // show modal-like window (simple)
+  let html = `<div style='font-family:Arial;padding:10px;width:600px;'><h3>${itemName} — Sales</h3><div style='max-height:400px;overflow:auto;'>`;
+  for(const r of related) html += `<div style='display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;'><div>${r.date} ${r.time} • ${r.shift} • ${r.saleId}</div><div>Qty: ${r.qty} — ₨ ${r.amount}</div></div>`;
+  html += `</div></div>`;
+  const w = window.open('','itemview','width=700,height=500'); w.document.write(html); w.document.close();
+});
 </script>
 </body>
 </html>
-
