@@ -1,956 +1,290 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BUNKER CAFÉ — POS (Final)</title>
-
-  <!-- Tailwind via CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- html2pdf for PDF export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
-
+  <title>BUNKER POS — Thermal Receipt Ready</title>
   <style>
-   :root{
-  /* Palette (change here to restyle the whole app) */
-  --cafe-brown: #3b2f2f;
-  --cafe-cream: #fff8ef;
-  --accent: #ffb86b;        /* gold-ish accent */
-  --muted: #7a6b65;
-  --fg: #2b2b2b;            /* main text color */
-  --inverse-fg: #f3efe9;    /* text on darker surfaces */
-  --card-elev: 12;          /* used for shadow depth */
-  --radius: 12px;
-  --shadow: 0 var(--card-elev)px 24px rgba(59,47,47,0.08);
-  --scroll-thumb: #d9c2a8;
+    :root{--bg:#1a1a1a;--panel:#111;--muted:#d4af37;--gold:#ffd700;}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--gold);}
+    header{background:#000;padding:12px;text-align:center;font-size:24px;font-weight:700;color:gold}
+    nav{display:flex;background:#000}
+    nav button{flex:1;padding:12px;font-size:15px;color:gold;background:#111;border:0;cursor:pointer}
+    nav button.active{background:#333}
+    .container{display:flex;height:calc(100vh - 80px);flex-direction:column}
+    .content{display:flex;flex:1;justify-content:space-between}
+    .menu{width:68%;background:var(--panel);padding:12px;overflow:auto;border-right:2px solid var(--gold)}
+    .menu h3{border-bottom:1px solid var(--gold);padding-bottom:6px;margin:0 0 8px 0}
+    .menu input{width:100%;padding:8px;margin-bottom:10px;background:WHITE;border:0;color:gold;border-radius:6px}
+    .category-container{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+    .category{background:PURPLE;color:gold;padding:8px 14px;border-radius:8px;cursor:pointer}
+    .menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#1a1a1a;border-radius:8px;margin-bottom:8px;border:1px solid rgba(255,215,0,0.04);cursor:pointer}
+    .menu-item:hover{background:RED}
+    .pos{width:40%;background:var(--bg);padding:16px;display:flex;flex-direction:column;align-items:center;border-left:10px solid var(--gold)}
+    .receipt-card{width:100%;background:#000;color:gold;padding:18px;border-radius:20px;border:3px solid rgba(255,215,0,0.06);font-family:monospace}
+    @media print {
+  .receipt-header {
+    font-size: 28pt !important; /* bigger for print */
+    font-weight: 900 !important;
+    text-align: center;
+    color: #000 !important;     /* black for clarity */
+    margin-bottom: 15pt;
+  }
 }
 
-/* Base layout */
-* { box-sizing: border-box; }
-html,body{ height:100%; margin:0; font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif; background:var(--cafe-cream); color:var(--fg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-
-/* Pages */
-.page { display:none; padding:20px; }
-.page.active { display:block; }
-
-/* Typography helpers */
-.logo { font-weight:800; letter-spacing:1px; color:var(--cafe-brown); }
-.small { font-size:12px; color:var(--muted); }
-
-/* Card: warm, slightly rounded, readable */
-.card {
-  background: linear-gradient(180deg, #fffaf0 0%, #fff6f0 100%);
-  border-radius: var(--radius);
-  padding:16px;
-  box-shadow: var(--shadow);
-  transition: transform .12s ease, box-shadow .12s ease;
-  color: var(--fg);
+    .receipt-meta{font-size:20px;color:var(--muted);margin-bottom:8px}
+    .receipt-items{width:100%;border-collapse:collapse;margin-bottom:8px}
+    .receipt-items th,.receipt-items td{padding:10px;border-bottom:1px dashed rgba(255,215,0,0.06);text-align:left;font-size:20px}
+   .receipt-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 900;           /* extra bold */
+  font-size: 22px;            /* larger text */
+  padding: 12px 8px;
+  margin-top: 12px;
+  border-top: 2px solid gold; /* clear divider line */
+  background: rgba(255,215,0,0.1);
+  border-radius: 8px;
+  color: var(--gold);
 }
 
-/* Accent variant for important cards */
-.card--accent {
-  background: linear-gradient(180deg, rgba(255,111,168,0.08), rgba(255,111,168,0.03));
-  border: 1px solid rgba(255,111,168,0.08);
-  color: var(--cafe-brown);
-}
-
-/* Compact card (for menus, receipts, etc.) */
-.menu-card {
-  border-radius:10px;
-  padding:12px;
-  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-  cursor: pointer;
-}
-.menu-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 18px 36px rgba(59,47,47,0.08);
-  border-color: rgba(0,0,0,0.06);
-}
-
-/* Buttons */
-.btn {
-  display:inline-flex; align-items:center; gap:8px;
-  padding:10px 14px; border-radius:10px; border:0; cursor:pointer;
-  background: linear-gradient(90deg, var(--accent), #ffd19a);
-  color: var(--inverse-fg); font-weight:600;
-  box-shadow: 0 8px 20px rgba(255,111,168,0.08);
-}
-.btn:active { transform: translateY(1px); }
-
-/* Currency micro-utility */
-.currency::before { content: "₨\00A0"; } /* PKR symbol */
-
-/* Scrollbar polish */
-::-webkit-scrollbar { height:8px; width:8px; }
-::-webkit-scrollbar-thumb { background: var(--scroll-thumb); border-radius:8px; }
-
-/* Thermal (58mm) print CSS */
-.thermal-receipt {
-  width: 320px;
-  font-family: "Courier New", Courier, monospace;
-  padding: 10px;
-  background: transparent;
-  color: var(--fg);
-  border-radius: 6px;
-}
-.thermal-receipt h2 { text-align:center; margin:6px 0; font-weight:700; letter-spacing:0.6px; }
-.receipt-row { display:flex; justify-content:space-between; margin:6px 0; font-size:13px; }
-.thermal-small { font-size:11px; color:var(--muted); }
-
-/* Print rules for clean receipts / printouts */
-@media print {
-  .no-print { display:none !important; }
-  body { background: white !important; color: black !important; }
-  .thermal-receipt { box-shadow:none; border:none; width: auto; padding:0; }
-  .card, .menu-card, .btn { box-shadow:none; background:transparent; border:none; }
-}
-
-/* Accessibility helpers */
-.visually-hidden { position: absolute !important; height:1px; width:1px; overflow:hidden; clip:rect(1px, 1px, 1px, 1px); white-space:nowrap; }
-
-/* Tiny responsive tweak */
-@media (max-width:980px) {
-  .grid-cols-3 { grid-template-columns: 1fr !important; }
-  main { padding:12px; }
-  nav { overflow:auto; white-space:nowrap; }
-}
+    .small{font-size:20px;color:var(--muted)}
+    .actions{display:flex;gap:8px;margin-top:10px;width:100%}
+    button.action{flex:1;padding:10px;background:var(--gold);color:#000;border:0;border-radius:6px;cursor:pointer}
+    button.ghost{background:#222;color:gold;border:1px solid rgba(255,215,0,0.06);padding:8px;border-radius:6px;cursor:pointer}
+    label.inline{display:flex;flex-direction:column;font-size:13px;color:var(--muted);width:100%;margin-bottom:8px}
+    input[type="number"], select, input[type="text"]{padding:8px;border-radius:6px;background:#111;color:gold;border:1px solid rgba(255,215,0,0.06)}
+    @media print {
+      @page { size: 1000mm auto; margin: 0; }
+      body * { visibility: hidden; }
+      #printableReceipt, #printableReceipt * { visibility: visible; }
+      #printableReceipt { position: absolute; left: 0; top: 0; width: 80mm; font-family:monospace; color: #000; background: #fff; padding: 6mm; }
+      #printableReceipt h2{font-size:12pt;margin:0 0 6px 0}
+      #printableReceipt p, #printableReceipt table {font-size:10pt}
+    }
+    @media (max-width:900px){.menu{width:100%;height:50vh}.pos{width:100%}.content{flex-direction:column}}
   </style>
 </head>
-<body class="light min-h-screen font-sans">
-
-  <!-- Header -->
-  <header class="flex items-center justify-between p-4 bg-[color:var(--cafe-brown)] text-white shadow no-print">
-    <div class="flex items-center gap-3">
-      <div id="logoArea" class="w-12 h-12 rounded-full bg-[#f6d7b0] flex items-center justify-center text-[#3b2f2f] font-bold">☕</div>
-      <div>
-        <h1 id="cafeName" class="text-xl font-extrabold">BUNKER CAFÉ</h1>
-        <div class="text-sm opacity-90">— Designed with passion by Muawviz Khan | 📞 0325-8575790 —</div>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-3">
-      <button id="themeToggle" class="px-3 py-2 rounded bg-white text-sm">Dark</button>
-      <div class="text-sm mr-2">Shift Drawer:</div>
-      <button id="startShiftBtn" class="px-3 py-2 bg-green-500 text-white rounded">Start Shift</button>
-      <button id="endShiftBtn" class="px-3 py-2 bg-red-500 text-white rounded">End Shift</button>
-    </div>
-  </header>
-
-  <!-- Nav -->
-  <nav class="flex gap-2 p-3 sticky top-0 bg-[color:var(--cafe-cream)] z-10 no-print">
-    <a href="#billing" class="navlink px-3 py-2 rounded bg-[#d9c2a8]">Billing</a>
-    <a href="#menu" class="navlink px-3 py-2 rounded">Menu</a>
-    <a href="#reports" class="navlink px-3 py-2 rounded">Reports</a>
-    <a href="#history" class="navlink px-3 py-2 rounded">History</a>
-    <div class="ml-auto flex gap-2">
-      <button id="exportAllCSV" class="px-3 py-2 bg-[#3b2f2f] text-white rounded">Export CSV</button>
-      <button id="exportAllPDF" class="px-3 py-2 bg-[#a67c52] text-white rounded">Export PDF</button>
-    </div>
+<body>
+  <header>🖤 THE BUNKER CAFE LUMS  🖤</header>
+  <nav>
+    <button id="tab-pos" class="active" onclick="switchTab('pos')">POS</button>
+    <button id="tab-report" onclick="switchTab('report')">REPORTS</button>
   </nav>
 
-  <main class="p-6">
-    <!-- Billing -->
-    <section id="billing" class="page active">
-      <div class="grid grid-cols-3 gap-6">
-        <div class="col-span-2">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-4">
-              <div class="text-sm font-semibold">Shift:</div>
-              <div class="rounded-xl bg-white shadow p-1 flex items-center">
-                <button id="shiftMorning" class="px-3 py-1 rounded-lg bg-[#ffe9d0]">Morning</button>
-                <button id="shiftEvening" class="px-3 py-1 rounded-lg">Evening</button>
-              </div>
-              <div class="ml-4 text-sm">Current Shift: <span id="currentShiftLabel" class="font-bold">Morning</span></div>
-            </div>
-
-            <div class="flex items-center gap-4">
-              <label class="text-sm font-semibold">Payment:</label>
-              <div class="rounded-xl bg-white shadow p-1 flex items-center">
-                <button id="payCash" class="px-3 py-1 rounded-lg bg-[#d1f7c4]">Cash</button>
-                <button id="payOnline" class="px-3 py-1 rounded-lg">Online</button>
-              </div>
-            </div>
-
-            <div>
-              <button id="saveSaleBtn" class="px-4 py-2 bg-[color:var(--cafe-brown)] text-white rounded-xl">Save Sale</button>
-              <button id="printReceiptBtn" class="px-4 py-2 ml-2 bg-[color:var(--accent)] text-white rounded-xl">Print</button>
-              <button id="printThermalBtn" class="px-4 py-2 ml-2 bg-[#6b4f2f] text-white rounded-xl">Thermal Print</button>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 mb-3">
-            <input id="billingSearch" placeholder="Search menu..." class="px-3 py-2 rounded-lg shadow w-1/3" />
-            <div id="categoryFilters" class="flex gap-2 flex-wrap"></div>
-          </div>
-
-          <div class="grid grid-cols-3 gap-4" id="menuGrid"></div>
-        </div>
-
-        <aside class="card p-4 rounded-xl shadow col-span-1">
-          <h3 class="font-semibold text-lg">Current Order</h3>
-          <div id="orderList" class="mt-3 space-y-2 max-h-80 overflow-auto"></div>
-          <div class="mt-4 border-t pt-3">
-            <div class="flex justify-between"><span class="font-medium">Subtotal</span><span class="font-medium currency" id="subtotal">0</span></div>
-            <div class="flex justify-between mt-1"><span class="text-sm">Tax (0%)</span><span class="text-sm currency">0</span></div>
-            <div class="flex justify-between mt-3 text-xl font-bold"><span>Total</span><span class="currency" id="total">0</span></div>
-          </div>
-          <div class="mt-3 flex gap-2">
-            <button id="clearOrderBtn" class="px-3 py-2 bg-gray-200 rounded">Clear</button>
-            <button id="saveShiftNote" class="px-3 py-2 bg-yellow-200 rounded">Shift Note</button>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <!-- Menu Page (admin) -->
-    <section id="menu" class="page">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-2xl font-bold">Menu Management</h2>
-        <div class="flex gap-2">
-          <input id="menuSearch" placeholder="Search menu..." class="px-3 py-2 rounded-lg shadow" />
-          <button id="addItemBtn" class="px-3 py-2 bg-[color:var(--cafe-brown)] text-white rounded-lg">Add Item</button>
-        </div>
-      </div>
-      <div id="menuTable" class="grid grid-cols-3 gap-4"></div>
-    </section>
-
-    <!-- Reports -->
-    <section id="reports" class="page">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Reports</h2>
-        <div class="flex gap-2">
-          <button id="reportsExportPDF" class="px-3 py-2 rounded bg-[color:var(--accent)] text-white">Export All PDF</button>
-          <button id="reportsExportCSV" class="px-3 py-2 rounded bg-[color:var(--cafe-brown)] text-white">Export All CSV</button>
-          <button id="reportsClearAll" class="px-3 py-2 rounded bg-red-500 text-white">Clear All Sales</button>
-        </div>
+  <div class="container">
+    <div class="content" id="pos-content">
+      <div class="menu" id="menu">
+        <h3>MENU</h3>
+        <input id="search" placeholder="Search item or category..." oninput="filterMenu()" />
+        <div id="categoryList" class="category-container"></div>
+        <div id="menuItems"></div>
       </div>
 
-      <div class="grid grid-cols-3 gap-4">
-        <div class="card">
-          <div class="flex justify-between items-center">
-            <div><h3 class="font-semibold">Daily</h3><div class="text-sm small">Today breakdown</div></div>
-            <div class="flex gap-2">
-              <button id="dailyExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
-              <button id="dailyExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
-              <button id="dailyClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
-            </div>
+      <div class="pos">
+        <label class="inline">Cashier:
+          <select id="cashier"><option>Cashier 1</option><option>Cashier 2</option></select>
+        </label>
+
+        <div id="receipt" class="receipt-card">
+          <div class="receipt-header">BUNKER CAFE LUMS</div>
+          <div class="receipt-meta" id="receipt-meta">No items</div>
+          <table class="receipt-items" id="receipt-items" style="display:none">
+            <thead><tr><th>Item</th><th>Q</th><th>₨</th></tr></thead>
+            <tbody id="receipt-body"></tbody>
+          </table>
+          <div class="receipt-total" id="receipt-total" style="display:none">
+            <div>Total</div><div id="receipt-total-value">₨0</div>
           </div>
-          <div id="dailyReport" class="mt-3"></div>
+          <div id="receipt-payment" style="display:none;margin-top:8px;font-size:13px"></div>
+          <div class="small" style="margin-top:8px;text-align:center">Thank you for visiting!
+Software developed by Muawviz Khan.
+For more information, please contact: 0325-8575790</div>
         </div>
 
-        <div class="card">
-          <div class="flex justify-between items-center">
-            <div><h3 class="font-semibold">Weekly</h3><div class="text-sm small">Week summary</div></div>
-            <div class="flex gap-2">
-              <button id="weeklyExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
-              <button id="weeklyExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
-              <button id="weeklyClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
-            </div>
-          </div>
-          <div id="weeklyReport" class="mt-3"></div>
-        </div>
+        <label class="inline">Payment Type:
+          <select id="paymentType" onchange="onPaymentTypeChange()">
+            <option value="Cash">Cash</option>
+            <option value="Online">Online</option>
+          </select>
+        </label>
 
-        <div class="card">
-          <div class="flex justify-between items-center">
-            <div><h3 class="font-semibold">Monthly</h3><div class="text-sm small">Month summary</div></div>
-            <div class="flex gap-2">
-              <button id="monthlyExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
-              <button id="monthlyExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
-              <button id="monthlyClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
-            </div>
-          </div>
-          <div id="monthlyReport" class="mt-3"></div>
-        </div>
+        <label class="inline" id="cashReceivedLabel">Cash Received:
+          <input type="number" id="cashReceived" min="0" value="0" onchange="updateChange()" />
+        </label>
+        <div class="small" style="width:100%;text-align:right;margin-bottom:6px">Change: <span id="changeValue">₨0</span></div>
 
-        <div class="card col-span-2">
-          <div class="flex justify-between items-center">
-            <div><h3 class="font-semibold">Category & Item-wise</h3><div class="text-sm small">Totals per category and per item (click item to see sales)</div></div>
-            <div class="flex gap-2">
-              <button id="categoryExportCSV" class="px-2 py-1 rounded bg-[color:var(--cafe-brown)] text-white text-sm">CSV</button>
-              <button id="categoryExportPDF" class="px-2 py-1 rounded bg-[color:var(--accent)] text-white text-sm">PDF</button>
-              <button id="categoryClear" class="px-2 py-1 rounded bg-red-400 text-white text-sm">Clear</button>
-            </div>
-          </div>
-          <div id="categoryReport" class="mt-3 grid grid-cols-3 gap-3"></div>
+        <div class="actions">
+          <button class="action" onclick="saveOrder()">SAVE ORDER</button>
+          <button class="action" onclick="printReceipt()">PRINT</button>
+        </div>
+        <div class="actions" style="margin-top:8px">
+          <button class="ghost" onclick="exportPDF()">EXPORT PDF</button>
+          <button class="ghost" onclick="clearCart()">Clear Cart</button>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- History -->
-    <section id="history" class="page">
-      <div class="flex justify-between items-center mb-3">
-        <h2 class="text-2xl font-bold">Sale History (click a date folder)</h2>
-        <div class="text-sm">Click a date to expand sales. Export or clear per date.</div>
+    <div id="report-section" class="report-container" style="display:none">
+      <h2 style="text-align:center;margin-top:0">📊 Sales Reports</h2>
+      <div class="report-filter">
+        <div class="filter-row">
+          <label>Report Type:
+            <select id="reportType" onchange="renderReport()">
+              <option value="all">All Orders</option>
+              <option value="cashier">By Cashier</option>
+              <option value="item">By Item</option>
+              <option value="category">By Category</option>
+              <option value="date">By Date</option>
+            </select>
+          </label>
+          <label>Cashier:<select id="reportCashier" onchange="renderReport()"><option value="">Any</option><option>Cashier 1</option><option>Cashier 2</option></select></label>
+          <label>Item:<input id="reportItem" placeholder="Item name" oninput="renderReport()" /></label>
+          <label>Category:<input id="reportCategory" placeholder="Category" oninput="renderReport()" /></label>
+          <label>Start:<input type="date" id="startDate" onchange="renderReport()" /></label>
+          <label>End:<input type="date" id="endDate" onchange="renderReport()" /></label>
+          <div style="margin-left:auto;">
+            <button class="action" onclick="renderReport()">FILTER</button>
+            <button class="ghost" onclick="switchTab('pos')">← Back</button>
+          </div>
+        </div>
       </div>
-      <div class="grid grid-cols-4 gap-6">
-        <div id="historyDates" class="col-span-1 bg-white p-3 rounded-xl shadow max-h-[60vh] overflow-auto"></div>
-        <div id="historyList" class="col-span-3 bg-white p-4 rounded-xl shadow max-h-[60vh] overflow-auto"></div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Receipt Template (hidden) -->
-  <div id="receiptTemplate" style="display:none;">
-    <div class="thermal-receipt">
-      <h2 class="logo">BUNKER CAFÉ</h2>
-      <div class="small">In The Bunker — Coffee & Co.</div>
-      <div id="rmeta" class="small mt-2"></div>
-      <hr />
-      <div id="ritems"></div>
-      <hr />
-      <div id="rtotals" class="mt-2"></div>
-      <hr />
-      <div class="small mt-2">
-        <div>Excellence is not an act, but a habit</div>
-        <div>— Designed with passion by Muawviz Khan | 📞 0325-8575790 —</div>
-      </div>
-      <div style="text-align:center;margin-top:8px;">Thank you! Visit Again</div>
+      <div id="report-summary" class="summary-cards"></div>
+      <div id="report-output"></div>
     </div>
   </div>
 
-<script>
-/* ======================
-   MENU (full list copied)
-   ====================== */
-const MENU = [
-  { id: 'm1', name: 'Espresso', category: 'Coffee', price: 180 },
-  { id: 'm2', name: 'Americano', category: 'Coffee', price: 180 },
-  { id: 'm3', name: 'Cappuccino', category: 'Coffee', price: 230 },
-  { id: 'm4', name: 'Caramelccino Latte', category: 'Coffee', price: 330 },
-  { id: 'm5', name: 'Spanish Latte', category: 'Coffee', price: 330 },
-  { id: 'm6', name: 'French Vanilla Latte', category: 'Coffee', price: 330 },
-  { id: 'm7', name: 'Dark Mocha Latte', category: 'Coffee', price: 330 },
-  { id: 'm8', name: 'Irish Caramel Latte', category: 'Coffee', price: 330 },
-  { id: 'm9', name: 'Cinnamon Spice Latte', category: 'Coffee', price: 330 },
-  { id: 'm10', name: 'Sticky Toffee Latte', category: 'Coffee', price: 330 },
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+const MENU_ITEMS = [
+  // Tea
+  {name:'Green Tea',price:80,category:'Tea'},
+  {name:'Milk Tea',price:100,category:'Tea'},
 
-  { id: 'm11', name: 'Green Tea', category: 'Tea', price: 80 },
-  { id: 'm12', name: 'Milk Tea', category: 'Tea', price: 100 },
+  // Coffee
+  {name:'Espresso',price:180,category:'Coffee'},
+  {name:'Americano',price:180,category:'Coffee'},
+  {name:'Cappuccino/Latte',price:330,category:'Coffee'},
+  {name:'Spanish Latte',price:330,category:'Coffee'},
+  {name:'French Vanilla Latte',price:330,category:'Coffee'},
+  {name:'Dark Mocha Latte',price:330,category:'Coffee'},
+  {name:'Lush Caramel Latte',price:330,category:'Coffee'},
+  {name:'Roasted Hazelnut Latte',price:330,category:'Coffee'},
+  {name:'Cinnamon Spice Latte',price:330,category:'Coffee'},
+  {name:'Sticky Toffee Latte',price:330,category:'Coffee'},
 
-  { id: 'm13', name: 'Iced Americano', category: 'Iced Coffee', price: 280 },
-  { id: 'm14', name: 'Iced Latte', category: 'Iced Coffee', price: 300 },
-  { id: 'm15', name: 'Iced Spanish Latte', category: 'Iced Coffee', price: 380 },
-  { id: 'm16', name: 'Iced Vanilla Latte', category: 'Iced Coffee', price: 380 },
-  { id: 'm17', name: 'Iced Mocha Latte', category: 'Iced Coffee', price: 380 },
-  { id: 'm18', name: 'Iced Caramel Latte', category: 'Iced Coffee', price: 380 },
-  { id: 'm19', name: 'Iced Hazelnut Latte', category: 'Iced Coffee', price: 380 },
-  { id: 'm20', name: 'Iced Cinnamon Latte', category: 'Iced Coffee', price: 380 },
-  { id: 'm21', name: 'Iced Toffee Latte', category: 'Iced Coffee', price: 380 },
+  // Iced Coffee
+  {name:'Iced Americano',price:200,category:'Iced Coffee'},
+  {name:'Iced Latte',price:300,category:'Iced Coffee'},
+  {name:'Iced Spanish Latte',price:380,category:'Iced Coffee'},
+  {name:'Iced Vanilla Latte',price:380,category:'Iced Coffee'},
+  {name:'Iced Mocha Latte',price:380,category:'Iced Coffee'},
+  {name:'Iced Caramel Latte',price:380,category:'Iced Coffee'},
+  {name:'Iced Hazelnut Latte',price:380,category:'Iced Coffee'},
+  {name:'Iced Cinnamon Latte',price:380,category:'Iced Coffee'},
+  {name:'Iced Toffee Latte',price:380,category:'Iced Coffee'},
 
-  { id: 'm22', name: 'Virgin Vanilla', category: 'Frappe', price: 430 },
-  { id: 'm23', name: 'Matcha Frappe', category: 'Frappe', price: 450 },
-  { id: 'm24', name: 'Cool Caramel', category: 'Frappe', price: 430 },
-  { id: 'm25', name: 'Hero Mocha', category: 'Frappe', price: 430 },
+  // Iced Tea
+  {name:'Peach Iced Tea',price:180,category:'Iced Tea'},
+  {name:'Lemon Iced Tea',price:180,category:'Iced Tea'},
+  {name:'Strawberry Iced Tea',price:180,category:'Iced Tea'},
 
-  { id: 'm26', name: 'Banana', category: 'Shake', price: 350 },
-  { id: 'm27', name: 'Strawberry', category: 'Shake', price: 350 },
-  { id: 'm28', name: 'Chocolate', category: 'Shake', price: 350 },
-  { id: 'm29', name: 'Oreo', category: 'Shake', price: 350 },
-  { id: 'm30', name: 'Lotus', category: 'Shake', price: 350 },
-  { id: 'm31', name: 'Mango', category: 'Shake', price: 350 },
-  { id: 'm32', name: 'Brownie House', category: 'Shake', price: 350 },
+  // Lemonade
+  {name:'Passion Fruit Lemonade',price:200,category:'Lemonade'},
+  {name:'Strawberry Lemonade',price:200,category:'Lemonade'},
+  {name:'Mint Lemonade',price:200,category:'Lemonade'},
+  {name:'Blue Ocean Lemonade',price:200,category:'Lemonade'},
 
-  { id: 'm33', name: 'Passion Fruit', category: 'Lemonade', price: 280 },
-  { id: 'm34', name: 'Strawberry (Lemonade)', category: 'Lemonade', price: 280 },
-  { id: 'm35', name: 'Mint Lemonade', category: 'Lemonade', price: 280 },
-  { id: 'm36', name: 'Blue Ocean', category: 'Lemonade', price: 280 },
+  // Frappe
+  {name:'Virgin Vanilla',price:430,category:'Frappe'},
+  {name:'Mean Mocha',price:430,category:'Frappe'},
+  {name:'Cool Caramel',price:430,category:'Frappe'},
+  {name:'Hero Hazelnut',price:430,category:'Frappe'},
 
-  { id: 'm37', name: 'Peach Iced Tea', category: 'Iced Tea', price: 180 },
-  { id: 'm38', name: 'Lemon Iced Tea', category: 'Iced Tea', price: 180 },
-  { id: 'm39', name: 'Strawberry Iced Tea', category: 'Iced Tea', price: 180 },
+  // Shake
+  {name:'Banana Shake',price:280,category:'Shake'},
+  {name:'Strawberry Shake',price:330,category:'Shake'},
+  {name:'Oreo Shake',price:330,category:'Shake'},
+  {name:'Chocolate Shake',price:330,category:'Shake'},
+  {name:'Lotus Shake',price:350,category:'Shake'},
+  {name:'Mango Shake',price:350,category:'Shake'},
+  {name:'Power House Shake',price:350,category:'Shake'},
 
-  { id: 'm40', name: 'Classic Belgian Hot Choc', category: 'Hot Chocolate', price: 320 },
-  { id: 'm41', name: 'S\'more Hot Choc', category: 'Hot Chocolate', price: 320 },
-  { id: 'm42', name: 'Mint Hot Choc', category: 'Hot Chocolate', price: 320 },
+  // Hot Choc
+  {name:'Classic Belgian',price:320,category:'Hot Choc'},
+  {name:'Banana Hot Choc',price:320,category:'Hot Choc'},
+  {name:'Mint Hot Choc',price:320,category:'Hot Choc'},
 
-  { id: 'm43', name: 'Vanilla Iced Matcha', category: 'Matcha', price: 480 },
-  { id: 'm44', name: 'Matcha Frappe', category: 'Matcha', price: 500 },
+  // Matcha
+  {name:'Vanilla Iced Matcha',price:400,category:'Matcha'},
+  {name:'Matcha Frappe',price:500,category:'Matcha'},
 
-  { id: 'm45', name: 'Sunrise Smoothie', category: 'Smoothie', price: 380 },
-  { id: 'm46', name: 'Sunset in Paradise', category: 'Smoothie', price: 380 },
-  { id: 'm47', name: 'Mint Margarita Smoothie', category: 'Smoothie', price: 250 },
+  // Smoothie
+  {name:'Sunrise',price:350,category:'Smoothie'},
+  {name:'Sunset in Paradise',price:350,category:'Smoothie'},
+  {name:'Mint Margarita',price:250,category:'Smoothie'},
 
-  { id: 'm48', name: 'Blueberry Slushee', category: 'Slushee', price: 150 },
-  { id: 'm49', name: 'Strawberry Slushee', category: 'Slushee', price: 150 },
-  { id: 'm50', name: 'Green Apple Slushee', category: 'Slushee', price: 150 },
-  { id: 'm51', name: 'Mix Berry Slushee', category: 'Slushee', price: 150 },
-  { id: 'm52', name: 'Peach Slushee', category: 'Slushee', price: 150 },
+  // Slushee
+  {name:'Blueberry',price:150,category:'Slushee'},
+  {name:'Strawberry',price:150,category:'Slushee'},
+  {name:'Green Apple',price:150,category:'Slushee'},
+  {name:'Mix Berry',price:150,category:'Slushee'},
+  {name:'Peach',price:150,category:'Slushee'},
 
-  { id: 'm53', name: 'Chicken Alfredo Pasta', category: 'Savory', price: 400 },
-  { id: 'm54', name: 'Chicken Arrabbiata Pasta', category: 'Savory', price: 400 },
-  { id: 'm55', name: 'Chicken Shawarma', category: 'Savory', price: 400 },
-  { id: 'm56', name: 'Mac & Cheese', category: 'Savory', price: 400 },
+  // Food
+  {name:'Cheese Toastie',price:330,category:'Sandwich'},
+  {name:'Chicken Panini',price:380,category:'Sandwich'},
+  {name:'French Toast',price:300,category:'Breakfast'},
+  {name:'Mac and Cheese',price:400,category:'Pasta'},
 
-  { id: 'm57', name: 'Cheese Toastie', category: 'Sandwich', price: 330 },
-  { id: 'm58', name: 'Chicken Panini', category: 'Sandwich', price: 380 },
+  // Extras
+  {name:'Simple Glazed Donut',price:250,category:'Donut'},
+  {name:'Boston Cream Donut',price:300,category:'Donut'},
+  {name:'Nutella Donut',price:300,category:'Donut'},
+  {name:'Red Velvet Donut',price:300,category:'Donut'},
+  {name:'Chocolate Fudge Brownie',price:300,category:'Brownie'},
+ 
 
-  { id: 'm59', name: 'French Toast', category: 'Breakfast', price: 300 },
+  // Finished Goods
+  {name:'Shahbaz Cookie',price:250,category:'Finished Goods'},
+  {name:'Shahbaz Brownie',price:250,category:'Finished Goods'},
+  {name:'D Cookie',price:450,category:'Finished Goods'},
+  {name:'Classic Cookie',price:350,category:'Finished Goods'},
+  {name:'Matilda Cake',price:500,category:'Finished Goods'},
+  {name:'Nut Bread',price:250,category:'Finished Goods'},
+  {name:'Plain Bread',price:230,category:'Finished Goods'},
 
-  /* Desserts (user requested) */
-  { id: 'd60', name: 'Matilda Cake', category: 'Dessert', price: 500 },
-  { id: 'd61', name: 'New Brownie', category: 'Dessert', price: 250 },
-  { id: 'd62', name: 'New Cookie', category: 'Dessert', price: 250 },
-  { id: 'd63', name: 'D Cookie', category: 'Dessert', price: 450 },
-  { id: 'd64', name: 'Chunk Cookie', category: 'Dessert', price: 350 },
-  { id: 'd65', name: 'Banana Bread (Nuts)', category: 'Dessert', price: 250 },
-  { id: 'd66', name: 'Banana Bread (Without Nuts)', category: 'Dessert', price: 230 },
-
-  /* Water category (single item) */
-  { id: 'w67', name: 'Water', category: 'Water', price: 60 },
-
-  { id: 'm68', name: 'Simple Glazed Donut', category: 'Dessert', price: 250 },
-  { id: 'm69', name: 'Chocolate Sundae', category: 'Dessert', price: 350 },
-  { id: 'm70', name: 'Caramel Sundae', category: 'Dessert', price: 350 },
-  { id: 'm71', name: 'Brownie & Ice Cream', category: 'Dessert', price: 350 }
+  // Disposable
+  {name:'Cup',price:10,category:'Disposable'},
+  {name:'Glass',price:10,category:'Disposable'},
 ];
 
-/* ======================
-   IndexedDB setup (stores: menuItems, sales, categories, shifts)
-   ====================== */
-const DB_NAME = 'bunkerCafeDB';
-const DB_VERSION = 5;
-let db = null;
+let currentCart=[];let db;
+// DB open/save same logic
+function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('bunker-pos-db',1);r.onupgradeneeded=e=>{const _db=e.target.result;if(!_db.objectStoreNames.contains('orders'))_db.createObjectStore('orders',{keyPath:'id'})};r.onsuccess=e=>{db=e.target.result;res(db)};r.onerror=e=>rej(e.target.error);});}
+function addOrderToDB(order){return new Promise((res,rej)=>{const tx=db.transaction('orders','readwrite');tx.objectStore('orders').add(order);tx.oncomplete=()=>res(true);tx.onerror=e=>rej(e.target.error);});}
+function getAllOrders(){return new Promise((res,rej)=>{const tx=db.transaction('orders','readonly');const s=tx.objectStore('orders');const req=s.getAll();req.onsuccess=()=>res(req.result||[]);req.onerror=e=>rej(e.target.error);});}
 
-function openDB(){
-  return new Promise((res, rej) => {
-    const req = indexedDB.open(DB_NAME, DB_VERSION);
-    req.onupgradeneeded = (e) => {
-      db = e.target.result;
-      if(!db.objectStoreNames.contains('menuItems')) db.createObjectStore('menuItems', { keyPath: 'id' });
-      if(!db.objectStoreNames.contains('sales')) db.createObjectStore('sales', { keyPath: 'id' });
-      if(!db.objectStoreNames.contains('shifts')) db.createObjectStore('shifts', { keyPath: 'id' });
-    };
-    req.onsuccess = (e) => { db = e.target.result; res(db); };
-    req.onerror = (e) => rej(e);
-  });
-}
-
-/* Generic db helpers */
-function dbPut(storeName, obj){
-  return new Promise((res,rej)=>{
-    const t = db.transaction(storeName, 'readwrite');
-    t.objectStore(storeName).put(obj);
-    t.oncomplete = ()=> res(true);
-    t.onerror = (e)=> rej(e);
-  });
-}
-function dbGetAll(storeName){
-  return new Promise((res,rej)=>{
-    const arr=[];
-    const r = db.transaction(storeName).objectStore(storeName).openCursor();
-    r.onsuccess = (e)=>{ const c = e.target.result; if(c){ arr.push(c.value); c.continue(); } else res(arr); };
-    r.onerror = (e)=> rej(e);
-  });
-}
-function dbGetByKey(storeName, key){
-  return new Promise((res,rej)=>{
-    const t = db.transaction(storeName).objectStore(storeName).get(key);
-    t.onsuccess = e=> res(e.target.result);
-    t.onerror = e=> rej(e);
-  });
-}
-function dbDelete(storeName, key){
-  return new Promise((res,rej)=>{
-    const t = db.transaction(storeName, 'readwrite');
-    t.objectStore(storeName).delete(key);
-    t.oncomplete = ()=> res(true);
-    t.onerror = e=> rej(e);
-  });
-}
-function dbClear(storeName){
-  return new Promise((res,rej)=>{
-    const t = db.transaction(storeName, 'readwrite');
-    t.objectStore(storeName).clear();
-    t.oncomplete = ()=> res(true);
-    t.onerror = e=> rej(e);
-  });
-}
-
-/* ======================
-   Utilities
-   ====================== */
-function uid(prefix=''){ return prefix + Date.now() + Math.floor(Math.random()*999); }
-function formatTime(dt){ return new Date(dt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
-function formatDateISO(dt){ return new Date(dt).toISOString().slice(0,10); }
-function weekOfYear(d){
-  const date = new Date(d.getFullYear(),0,1);
-  return Math.ceil((((d - date) / 86400000) + date.getDay()+1)/7);
-}
-
-/* ======================
-   App state
-   ====================== */
-let currentShift = 'Morning';
-let paymentType = 'cash';
-let currentOrder = [];
-let currentShiftId = null;
-let currentShiftRecordCache = null;
-
-/* ======================
-   Init
-   ====================== */
-(async function init(){
-  await openDB();
-  await seedMenuIfEmpty();
-  setupNav();
-  await renderMenuGrid();
-  setupControls();
-  renderOrder();
-  renderReportsAll();
-  applyThemeFromStorage();
-})();
-
-/* ======================
-   Seed menu
-   ====================== */
-async function seedMenuIfEmpty(){
-  const all = await dbGetAll('menuItems');
-  if(all.length === 0){
-    for(const m of MENU) await dbPut('menuItems', m);
-  } else {
-    // ensure provided MENU items exist (merge)
-    const existingIds = new Set(all.map(i=>i.id));
-    for(const m of MENU) if(!existingIds.has(m.id)) await dbPut('menuItems', m);
-  }
-}
-
-/* ======================
-   Navigation
-   ====================== */
-function setupNav(){
-  document.querySelectorAll('.navlink').forEach(a=>{
-    a.addEventListener('click', (e)=>{
-      e.preventDefault();
-      const hash = a.getAttribute('href').slice(1);
-      showPage(hash);
-      document.querySelectorAll('.navlink').forEach(n=>n.classList.remove('bg-[#d9c2a8]'));
-      a.classList.add('bg-[#d9c2a8]');
-    });
-  });
-  window.addEventListener('hashchange', ()=> showPage(location.hash.slice(1) || 'billing'));
-}
-function showPage(name){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const p = document.getElementById(name) || document.getElementById('billing');
-  p.classList.add('active');
-  // ensure visible block display
-  document.querySelectorAll('.page').forEach(x=> x.style.display='none');
-  p.style.display='block';
-  if(name==='menu') renderMenuTable();
-  if(name==='reports') renderReportsAll();
-  if(name==='history') renderHistory();
-}
-
-/* ======================
-   Menu rendering
-   ====================== */
-async function renderMenuGrid(query=''){
-  const items = (await dbGetAll('menuItems')).filter(i => i.name.toLowerCase().includes(query.toLowerCase()) || i.category.toLowerCase().includes(query.toLowerCase()));
-  const grid = document.getElementById('menuGrid'); grid.innerHTML='';
-  for(const it of items){
-    const card = document.createElement('div'); card.className='p-3 rounded-xl shadow bg-card cursor-pointer menu-card';
-    card.innerHTML = `<div class='font-semibold'>${it.name}</div><div class='text-sm text-gray-600'>${it.category}</div><div class='mt-2 text-lg font-bold currency'>${it.price}</div>`;
-    card.addEventListener('click', ()=>{ addToOrder(it); });
-    grid.appendChild(card);
-  }
-  renderCategoryFilters();
-}
-async function renderMenuTable(q=''){
-  const items = (await dbGetAll('menuItems')).filter(i => i.name.toLowerCase().includes(q.toLowerCase()) || i.category.toLowerCase().includes(q.toLowerCase()));
-  const t = document.getElementById('menuTable'); t.innerHTML='';
-  for(const it of items){
-    const row = document.createElement('div'); row.className='p-3 bg-card rounded-xl shadow flex justify-between items-center';
-    row.innerHTML = `<div><div class='font-semibold'>${it.name}</div><div class='text-sm text-gray-600'>${it.category}</div></div><div class='flex items-center gap-2'><div class='font-bold currency'>${it.price}</div></div>`;
-    t.appendChild(row);
-  }
-}
-async function renderCategoryFilters(){
-  const items = await dbGetAll('menuItems');
-  const cats = Array.from(new Set(items.map(i=>i.category)));
-  const cf = document.getElementById('categoryFilters'); cf.innerHTML='';
-  const allBtn = document.createElement('button'); allBtn.className='px-2 py-1 bg-white rounded'; allBtn.textContent='All'; allBtn.addEventListener('click', ()=> renderMenuGrid('')); cf.appendChild(allBtn);
-  for(const c of cats){
-    const b = document.createElement('button'); b.className='px-2 py-1 bg-white rounded'; b.textContent = c; b.addEventListener('click', ()=> renderMenuGrid(c)); cf.appendChild(b);
-  }
-}
-
-/* ======================
-   Order logic
-   ====================== */
-function addToOrder(item){
-  const existing = currentOrder.find(i=>i.id===item.id);
-  if(existing) existing.qty++; else currentOrder.push({ ...item, qty:1 });
-  renderOrder();
-}
-function renderOrder(){
-  const ol = document.getElementById('orderList'); ol.innerHTML='';
-  let subtotal=0;
-  for(const it of currentOrder){
-    subtotal += it.price * it.qty;
-    const el = document.createElement('div'); el.className='flex justify-between items-center bg-white p-2 rounded';
-    el.innerHTML = `<div><div class='font-semibold'>${it.name}</div><div class='text-sm text-gray-600'>${it.qty} × <span class='currency'>${it.price}</span></div></div><div class='flex gap-2'><button class='px-2 py-1 bg-red-100 rounded' data-action='minus' data-id='${it.id}'>-</button><button class='px-2 py-1 bg-green-100 rounded' data-action='plus' data-id='${it.id}'>+</button></div>`;
-    ol.appendChild(el);
-  }
-  document.getElementById('subtotal').textContent = subtotal;
-  document.getElementById('total').textContent = subtotal;
-}
-document.addEventListener('click', (e)=>{
-  const a = e.target.closest('button[data-action]'); if(!a) return;
-  const id = a.dataset.id; const act = a.dataset.action;
-  const it = currentOrder.find(x=>x.id===id);
-  if(!it) return;
-  if(act==='plus') it.qty++; else it.qty--; if(it.qty<=0) currentOrder = currentOrder.filter(x=>x.id!==id);
-  renderOrder();
-});
-
-/* ======================
-   Controls & Theme
-   ====================== */
-function setupControls(){
-  document.getElementById('shiftMorning').addEventListener('click', ()=>{ currentShift='Morning'; updateShiftLabel(); });
-  document.getElementById('shiftEvening').addEventListener('click', ()=>{ currentShift='Evening'; updateShiftLabel(); });
-  document.getElementById('payCash').addEventListener('click', ()=>{ paymentType='cash'; highlightPayment(); });
-  document.getElementById('payOnline').addEventListener('click', ()=>{ paymentType='online'; highlightPayment(); });
-  document.getElementById('saveSaleBtn').addEventListener('click', saveSale);
-  document.getElementById('printReceiptBtn').addEventListener('click', () => printReceipt(false));
-  document.getElementById('printThermalBtn').addEventListener('click', () => printReceipt(true));
-  document.getElementById('menuSearch').addEventListener('input', (e)=>{ renderMenuTable(e.target.value); renderMenuGrid(e.target.value); });
-  document.getElementById('billingSearch').addEventListener('input', (e)=> renderMenuGrid(e.target.value));
-  document.getElementById('addItemBtn').addEventListener('click', async ()=>{
-    const name = prompt('Item name'); if(!name) return; const price = Number(prompt('Price in PKR')); if(isNaN(price)) return alert('Invalid price'); const category = prompt('Category') || 'Others';
-    const id = 'm' + uid(); await dbPut('menuItems', { id, name, category, price }); await renderMenuGrid(); await renderMenuTable();
-  });
-  document.getElementById('clearOrderBtn').addEventListener('click', ()=>{ currentOrder=[]; renderOrder(); });
-  document.getElementById('saveShiftNote').addEventListener('click', ()=>{ const note = prompt('Shift note:'); if(!note) return; if(!currentShiftId) return alert('Start the shift first'); dbPut('shifts', { ...currentShiftRecordCache, notes: (currentShiftRecordCache.notes||'') + '\n' + note }); alert('Note saved'); });
-
-  // exports & clears in reports
-  document.getElementById('exportAllCSV').addEventListener('click', exportAllCSV);
-  document.getElementById('exportAllPDF').addEventListener('click', exportAllPDF);
-  document.getElementById('dailyExportCSV').addEventListener('click', exportDailyCSV);
-  document.getElementById('dailyExportPDF').addEventListener('click', exportDailyPDF);
-  document.getElementById('weeklyExportCSV').addEventListener('click', exportWeeklyCSV);
-  document.getElementById('weeklyExportPDF').addEventListener('click', exportWeeklyPDF);
-  document.getElementById('monthlyExportCSV').addEventListener('click', exportMonthlyCSV);
-  document.getElementById('monthlyExportPDF').addEventListener('click', exportMonthlyPDF);
-
-  document.getElementById('reportsExportPDF').addEventListener('click', exportAllPDF);
-  document.getElementById('reportsExportCSV').addEventListener('click', exportAllCSV);
-  document.getElementById('reportsClearAll').addEventListener('click', async ()=>{
-    if(!confirm('Clear ALL sales records? This cannot be undone.')) return;
-    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('All sales cleared');
-  });
-
-  document.getElementById('dailyClear').addEventListener('click', async ()=>{
-    if(!confirm('Clear TODAY sales?')) return;
-    const today = new Date().toISOString().slice(0,10);
-    const all = await dbGetAll('sales');
-    for(const s of all) if(s.dateStr===today) await dbDelete('sales', s.id);
-    renderReportsAll(); renderHistory(); alert('Today sales cleared');
-  });
-  document.getElementById('weeklyClear').addEventListener('click', async ()=>{
-    if(!confirm('Clear ALL weekly summary (deletes all sales) ?')) return;
-    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('Weekly cleared (all sales removed)');
-  });
-  document.getElementById('monthlyClear').addEventListener('click', async ()=>{
-    if(!confirm('Clear ALL monthly summary (deletes all sales) ?')) return;
-    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('Monthly cleared (all sales removed)');
-  });
-  document.getElementById('categoryClear').addEventListener('click', async ()=>{
-    if(!confirm('Clear category & item sales (deletes all sales)?')) return;
-    await dbClear('sales'); renderReportsAll(); renderHistory(); alert('Category cleared (all sales removed)');
-  });
-
-  // category export
-  document.getElementById('categoryExportCSV').addEventListener('click', exportCategoryCSV);
-  document.getElementById('categoryExportPDF').addEventListener('click', exportCategoryPDF);
-
-  // theme
-  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-  highlightPayment();
-  updateShiftLabel();
-}
-function highlightPayment(){ document.getElementById('payCash').classList.toggle('ring-4', paymentType==='cash'); document.getElementById('payOnline').classList.toggle('ring-4', paymentType==='online'); }
-function updateShiftLabel(){ document.getElementById('currentShiftLabel').textContent = currentShift; }
-
-/* ======================
-   Shift start / end (Cash Drawer)
-   ====================== */
-document.getElementById('startShiftBtn').addEventListener('click', async ()=>{
-  const opening = Number(prompt(`Enter opening cash in drawer for ${currentShift} shift (PKR)`));
-  if(isNaN(opening)) return alert('Invalid amount');
-  const now = new Date();
-  const id = `${formatDateISO(now)}_${currentShift}`;
-  const record = { id, date: formatDateISO(now), shift: currentShift, openingCash: opening, startTime: now.toISOString(), closingCash: null, cashSales: 0, expectedClosing: opening, discrepancy: null, notes: '' };
-  await dbPut('shifts', record);
-  currentShiftId = id;
-  currentShiftRecordCache = record;
-  alert(`Shift ${currentShift} started. Opening cash: ₨ ${opening}`);
-  renderReportsAll();
-});
-
-document.getElementById('endShiftBtn').addEventListener('click', async ()=>{
-  if(!currentShiftId){
-    const guessId = `${formatDateISO(new Date())}_${currentShift}`;
-    const rec = await dbGetByKey('shifts', guessId);
-    if(rec) { currentShiftId = rec.id; currentShiftRecordCache = rec; }
-  }
-  if(!currentShiftId) return alert('No running shift record found. Start the shift first.');
-  const closing = Number(prompt('Enter closing cash in drawer (actual counted) in PKR'));
-  if(isNaN(closing)) return alert('Invalid amount');
-  const allSales = await dbGetAll('sales');
-  const cashSales = allSales.filter(s=> s.shift===currentShift && s.paymentType==='cash').reduce((a,b)=> a + b.total, 0);
-  const rec = await dbGetByKey('shifts', currentShiftId);
-  const expected = (rec.openingCash || 0) + cashSales;
-  const discrepancy = closing - expected;
-  const updated = { ...rec, closingCash: closing, endTime: new Date().toISOString(), cashSales, expectedClosing: expected, discrepancy };
-  await dbPut('shifts', updated);
-  currentShiftId = null;
-  currentShiftRecordCache = null;
-  alert(`Shift closed. Cash sales: ₨ ${cashSales}. Expected closing: ₨ ${expected}. Discrepancy: ₨ ${discrepancy}`);
-  renderReportsAll();
-});
-
-/* ======================
-   Save Sale
-   ====================== */
-async function saveSale(){
-  if(currentOrder.length===0){ alert('Add items first'); return; }
-  const total = currentOrder.reduce((s,i)=>s + i.price*i.qty, 0);
-  const now = new Date();
-  const sale = { id: 's'+uid(), dateTime: now.toISOString(), dateStr: now.toISOString().slice(0,10), shift: currentShift, items: currentOrder.map(x=>({ id:x.id, name:x.name, category:x.category, price:x.price, qty:x.qty })), total, paymentType, weekNo: weekOfYear(now), monthNo: now.getMonth()+1 };
-  await dbPut('sales', sale);
-  currentOrder = [];
-  renderOrder();
-  alert('Sale saved');
-  renderReportsAll();
-}
-
-/* ======================
-   Receipt Print
-   ====================== */
-function printReceipt(thermal=false){
-  if(currentOrder.length===0){ alert('No items to print'); return; }
-  const now = new Date();
-  const meta = document.getElementById('rmeta');
-  const items = document.getElementById('ritems');
-  const totals = document.getElementById('rtotals');
-  meta.innerHTML = `<div>Order#: ${Date.now()}</div><div>Date: ${now.toLocaleString()}</div><div>Shift: ${currentShift} | Payment: ${paymentType}</div>`;
-  items.innerHTML = '';
-  let subtotal=0;
-  for(const it of currentOrder){ subtotal += it.price*it.qty; items.innerHTML += `<div class="receipt-row"><div>${it.qty}x ${it.name}</div><div>₨ ${it.price*it.qty}</div></div>`; }
-  totals.innerHTML = `<div class="receipt-row" style="font-weight:bold"><div>Total</div><div>₨ ${subtotal}</div></div>`;
-  const content = document.getElementById('receiptTemplate').innerHTML;
-  const w = window.open('','printwin','width=400,height=600');
-  w.document.write('<html><head><title>Receipt</title><style>body{font-family:Arial}</style></head><body>');
-  if(thermal){
-    w.document.write('<div class="thermal-receipt">');
-    w.document.write(content);
-    w.document.write('</div>');
-  } else {
-    w.document.write(content);
-  }
-  w.document.write('</body></html>');
-  w.document.close();
-  w.focus();
-  setTimeout(()=> w.print(), 400);
-}
-
-/* ======================
-   Reports rendering
-   ====================== */
-async function renderShiftReport(shift){
-  const all = await dbGetAll('sales');
-  const filtered = all.filter(s=>s.shift===shift);
-  const el = document.getElementById(shift.toLowerCase()+'Report'); el.innerHTML='';
-  let total=0; const categories={}; let cash=0, online=0;
-  for(const s of filtered){
-    total += s.total;
-    if(s.paymentType==='cash') cash+=s.total; else online+=s.total;
-    for(const it of s.items){ categories[it.category]= (categories[it.category]||0) + (it.price*it.qty); }
-  }
-  const todayShiftId = `${formatDateISO(new Date())}_${shift}`;
-  const shiftRec = await dbGetByKey('shifts', todayShiftId);
-  const drawerHtml = shiftRec ? `<div class='mt-2 p-2 bg-white rounded'><div>Opening: ₨ ${shiftRec.openingCash}</div><div>Cash Sales: ₨ ${shiftRec.cashSales||0}</div><div>Closing: ${shiftRec.closingCash ? '₨ ' + shiftRec.closingCash : '—'}</div><div>Discrepancy: ${shiftRec.discrepancy!=null ? '₨ '+shiftRec.discrepancy : '—'}</div></div>` : '';
-  if(el) el.innerHTML = `<div class='p-4 bg-white rounded-xl shadow'><div class='font-bold'>Total: <span class='currency'>${total}</span></div><div>Cash: <span class='currency'>${cash}</span> | Online: <span class='currency'>${online}</span></div>${drawerHtml}</div>`;
-  for(const c in categories){ const card=document.createElement('div'); card.className='p-3 bg-white rounded-xl shadow mt-3'; card.innerHTML=`<div class='font-semibold'>${c}</div><div class='currency'>${categories[c]}</div>`; if(el) el.appendChild(card); }
-}
-async function renderDaily(){
-  const all = await dbGetAll('sales'); const today = new Date().toISOString().slice(0,10); const filtered = all.filter(s=>s.dateStr===today);
-  const cont=document.getElementById('dailyReport'); cont.innerHTML=''; let total=0;
-  for(const s of filtered){ total+=s.total; cont.innerHTML += `<div class='p-2 bg-white rounded mb-2'>${formatTime(s.dateTime)} - ${s.shift} - <b class='currency'>${s.total}</b></div>`; }
-  cont.innerHTML = `<div class='p-3 bg-white rounded-xl shadow'><b>Today Total:</b> <span class='currency'>${total}</span></div>` + cont.innerHTML;
-}
-async function renderWeekly(){
-  const all = await dbGetAll('sales'); const byWeek = {};
-  for(const s of all){ const key = s.weekNo+'-'+s.dateStr.slice(0,4); byWeek[key] = (byWeek[key]||0) + s.total; }
-  const cont=document.getElementById('weeklyReport'); cont.innerHTML='';
-  for(const k of Object.keys(byWeek).sort().reverse()){ cont.innerHTML += `<div class='p-2 bg-white rounded mb-2'>Week ${k.split('-')[0]} - <b class='currency'>${byWeek[k]}</b></div>`; }
-}
-async function renderMonthly(){
-  const all = await dbGetAll('sales'); const byMonth={};
-  for(const s of all){ const key = s.monthNo+'-'+new Date(s.dateTime).getFullYear(); byMonth[key] = (byMonth[key]||0) + s.total; }
-  const cont=document.getElementById('monthlyReport'); cont.innerHTML='';
-  for(const m of Object.keys(byMonth).sort().reverse()){ cont.innerHTML += `<div class='p-2 bg-white rounded mb-2'>Month ${m} - <b class='currency'>${byMonth[m]}</b></div>`; }
-}
-async function renderCategoryReport(){
-  const all = await dbGetAll('sales'); const categories={};
-  for(const s of all){ for(const it of s.items){ categories[it.category] = (categories[it.category]||0) + (it.price*it.qty); } }
-  const cont=document.getElementById('categoryReport'); cont.innerHTML='';
-  for(const c in categories){ cont.innerHTML += `<div class='p-3 bg-white rounded-xl shadow'><div class='font-semibold'>${c}</div><div class='currency'>${categories[c]}</div></div>`; }
-}
-async function renderReportsAll(){ await renderCategoryReport(); await renderShiftReport('Morning'); await renderShiftReport('Evening'); await renderDaily(); await renderWeekly(); await renderMonthly(); await renderHistory(); }
-
-/* ======================
-   History
-   ====================== */
-async function renderHistory(){
-  const all = await dbGetAll('sales'); const dates = {};
-  for(const s of all){ dates[s.dateStr] = dates[s.dateStr] || []; dates[s.dateStr].push(s); }
-  const left = document.getElementById('historyDates'); const right = document.getElementById('historyList'); left.innerHTML=''; right.innerHTML='';
-  const sorted = Object.keys(dates).sort((a,b)=>b.localeCompare(a));
-  for(const d of sorted){
-    const el = document.createElement('div'); el.className='p-2 cursor-pointer hover:bg-gray-100 rounded flex justify-between items-center';
-    el.innerHTML = `<div>${d}</div><div class="text-sm"><button class="px-2 py-1 bg-[color:var(--cafe-brown)] text-white rounded" data-export-date="${d}">Export</button> <button class="px-2 py-1 bg-red-400 text-white rounded" data-clear-date="${d}">Clear</button></div>`;
-    el.addEventListener('click', ()=>{ showDateSales(d, dates[d]); });
-    left.appendChild(el);
-  }
-  left.addEventListener('click', async (ev)=>{
-    const btn = ev.target.closest('button[data-export-date]');
-    if(btn){
-      const d = btn.dataset.exportDate;
-      const allSales = (await dbGetAll('sales')).filter(s=> s.dateStr === d);
-      exportSalesArrayToCSV(allSales, `sales_${d}.csv`);
-      return;
-    }
-    const btn2 = ev.target.closest('button[data-clear-date]');
-    if(btn2){
-      const d = btn2.dataset.clearDate;
-      if(!confirm(`Clear sales for ${d}? This cannot be undone.`)) return;
-      const arr = await dbGetAll('sales');
-      for(const s of arr) if(s.dateStr===d) await dbDelete('sales', s.id);
-      renderReportsAll(); alert(`Sales for ${d} cleared`);
-    }
-  });
-}
-function showDateSales(date, sales){
-  const right = document.getElementById('historyList'); right.innerHTML = `<h3 class='font-semibold mb-2'>Sales on ${date}</h3>`;
-  for(const s of sales){
-    const box = document.createElement('div'); box.className='p-3 mb-2 bg-white rounded shadow flex justify-between items-center';
-    box.innerHTML = `<div><div class='font-semibold'>Sale ${s.id}</div><div class='text-sm'>${formatTime(s.dateTime)} • ${s.shift} • ${s.paymentType}</div></div><div class='flex gap-2 items-center'><div class='font-bold currency'>${s.total}</div><button class='px-2 py-1 bg-gray-200 rounded' data-view='${s.id}'>View</button></div>`;
-    right.appendChild(box);
-  }
-}
-document.addEventListener('click', async (e)=>{
-  const v = e.target.closest('button[data-view]'); if(!v) return; const id = v.dataset.view; const s = (await dbGetAll('sales')).find(x=>x.id===id); if(!s) return;
-  const html = `<div style='font-family:Arial;width:320px;padding:10px;'><h2 style='text-align:center'>BUNKER CAFÉ</h2><div>Sale#: ${s.id}</div><div>Date: ${new Date(s.dateTime).toLocaleString()}</div><div>Shift: ${s.shift}</div><hr>`;
-  let itemsHtml=''; for(const it of s.items){ itemsHtml += `<div style='display:flex;justify-content:space-between'><div>${it.qty}x ${it.name}</div><div>₨ ${it.price*it.qty}</div></div>`; }
-  const footer = `<hr><div style='display:flex;justify-content:space-between'><b>Total</b><b>₨ ${s.total}</b></div><div style='margin-top:8px;font-size:12px'>یہ نظام معاذ خان نے بنایا ہے<br/>This system was built by Muawwiz Khan.<br/>For details contact: 0325-8575790</div></div>`;
-  const w = window.open('','view'); w.document.write(html+itemsHtml+footer); w.document.close();
-});
-
-/* ======================
-   CSV / PDF Export helpers
-   ====================== */
-function exportSalesArrayToCSV(arr, filename='sales.csv'){
-  if(!arr || !arr.length) return alert('No sales to export');
-  const rows = [];
-  rows.push(['id','dateTime','dateStr','shift','paymentType','total','items']);
-  for(const s of arr){
-    const itemsStr = s.items.map(i=> `${i.qty}x ${i.name} (${i.category})`).join(' | ');
-    rows.push([s.id, s.dateTime, s.dateStr, s.shift, s.paymentType, s.total, itemsStr]);
-  }
-  const csv = rows.map(r=> r.map(cell=> `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  link.click();
-}
-
-async function exportAllCSV(){ const arr = await dbGetAll('sales'); if(arr.length===0) return alert('No sales to export'); exportSalesArrayToCSV(arr, `sales_all_${new Date().toISOString().slice(0,10)}.csv`); }
-async function exportAllPDF(){ const arr = await dbGetAll('sales'); if(arr.length===0) return alert('No sales to export'); const el = document.createElement('div'); el.innerHTML = `<h2>All Sales (${arr.length})</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.shift} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_all_${new Date().toISOString().slice(0,10)}.pdf`); }
-async function exportShiftCSV(shift){ const arr = (await dbGetAll('sales')).filter(s=> s.shift===shift); exportSalesArrayToCSV(arr, `sales_${shift}_${new Date().toISOString().slice(0,10)}.csv`); }
-async function exportShiftPDF(shift){ const arr = (await dbGetAll('sales')).filter(s=> s.shift===shift); const el=document.createElement('div'); el.innerHTML = `<h2>${shift} Sales (${arr.length})</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_${shift}_${new Date().toISOString().slice(0,10)}.pdf`); }
-async function exportDailyCSV(){ const today = new Date().toISOString().slice(0,10); const arr = (await dbGetAll('sales')).filter(s=> s.dateStr===today); exportSalesArrayToCSV(arr, `sales_${today}.csv`); }
-async function exportDailyPDF(){ const today = new Date().toISOString().slice(0,10); const arr = (await dbGetAll('sales')).filter(s=> s.dateStr===today); if(arr.length===0) return alert('No sales for today'); const el=document.createElement('div'); el.innerHTML = `<h2>Sales ${today}</h2>` + arr.map(s=> `<div><b>${s.id}</b> ${s.dateTime} ${s.shift} ${s.paymentType} ₨ ${s.total}</div>`).join(''); html2pdf().from(el).save(`sales_${today}.pdf`); }
-async function exportWeeklyCSV(){ const byWeek = {}; (await dbGetAll('sales')).forEach(s=>{ const key = s.weekNo + '-' + s.dateStr.slice(0,4); byWeek[key] = (byWeek[key]||0) + s.total; }); const rows=[['week','total']]; for(const k in byWeek) rows.push([k,byWeek[k]]); const csv = rows.map(r=> r.map(c=>`"${c}"`).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`weekly_${new Date().toISOString().slice(0,10)}.csv`; link.click(); }
-async function exportWeeklyPDF(){ const byWeek = {}; (await dbGetAll('sales')).forEach(s=>{ const key = s.weekNo + '-' + s.dateStr.slice(0,4); byWeek[key] = (byWeek[key]||0) + s.total; }); const el=document.createElement('div'); el.innerHTML = `<h2>Weekly Summary</h2>` + Object.entries(byWeek).map(([k,v])=> `<div>${k} - ₨ ${v}</div>`).join(''); html2pdf().from(el).save(`weekly_${new Date().toISOString().slice(0,10)}.pdf`); }
-async function exportMonthlyCSV(){ const byMonth={}; (await dbGetAll('sales')).forEach(s=>{ const key = s.monthNo+'-'+new Date(s.dateTime).getFullYear(); byMonth[key] = (byMonth[key]||0) + s.total; }); const rows=[['month','total']]; for(const k in byMonth) rows.push([k,byMonth[k]]); const csv = rows.map(r=> r.map(c=>`"${c}"`).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`monthly_${new Date().toISOString().slice(0,10)}.csv`; link.click(); }
-async function exportMonthlyPDF(){ const byMonth={}; (await dbGetAll('sales')).forEach(s=>{ const key = s.monthNo+'-'+new Date(s.dateTime).getFullYear(); byMonth[key] = (byMonth[key]||0) + s.total; }); const el=document.createElement('div'); el.innerHTML = `<h2>Monthly Summary</h2>` + Object.entries(byMonth).map(([k,v])=> `<div>${k} - ₨ ${v}</div>`).join(''); html2pdf().from(el).save(`monthly_${new Date().toISOString().slice(0,10)}.pdf`); }
-
-/* Category exports */
-async function exportCategoryCSV(){
-  const all = await dbGetAll('sales');
-  const rows=[['category','item','qty','revenue']];
-  const itemTotals = {};
-  for(const s of all) for(const it of s.items){
-    if(!itemTotals[it.id]) itemTotals[it.id]={name:it.name, category:it.category, qty:0, revenue:0};
-    itemTotals[it.id].qty += it.qty;
-    itemTotals[it.id].revenue += it.qty*it.price;
-  }
-  for(const id in itemTotals) rows.push([itemTotals[id].category, itemTotals[id].name, itemTotals[id].qty, itemTotals[id].revenue]);
-  const csv = rows.map(r=> r.map(cell=> `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `category_items_${new Date().toISOString().slice(0,10)}.csv`; link.click();
-}
-async function exportCategoryPDF(){
-  const all = await dbGetAll('sales');
-  const itemTotals = {};
-  for(const s of all) for(const it of s.items){
-    if(!itemTotals[it.id]) itemTotals[it.id]={name:it.name, category:it.category, qty:0, revenue:0};
-    itemTotals[it.id].qty += it.qty;
-    itemTotals[it.id].revenue += it.qty*it.price;
-  }
-  const el=document.createElement('div');
-  el.innerHTML = `<h2>Category & Item Summary</h2>` + Object.values(itemTotals).map(i=> `<div><b>${i.name}</b> (${i.category}) — Qty: ${i.qty} — ₨ ${i.revenue}</div>`).join('');
-  if(Object.keys(itemTotals).length===0) return alert('No item records to export');
-  html2pdf().from(el).save(`category_items_${new Date().toISOString().slice(0,10)}.pdf`);
-}
-
-/* ======================
-   Theme
-   ====================== */
-function applyThemeFromStorage(){
-  const t = localStorage.getItem('bunker_theme') || 'light';
-  document.body.classList.remove('light','dark');
-  document.body.classList.add(t);
-  document.getElementById('themeToggle').textContent = t==='light' ? 'Dark' : 'Light';
-}
-function toggleTheme(){
-  const cur = document.body.classList.contains('dark') ? 'dark' : 'light';
-  const nxt = cur==='light' ? 'dark' : 'light';
-  document.body.classList.remove('light','dark');
-  document.body.classList.add(nxt);
-  localStorage.setItem('bunker_theme', nxt);
-  document.getElementById('themeToggle').textContent = nxt==='light' ? 'Dark' : 'Light';
-}
-
-/* ======================
-   Finish init placeholder
-   ====================== */
-document.addEventListener('DOMContentLoaded', () => { /* ready */ });
-
-/* ======================
-   Extra: listen for dynamic item-view clicks (render item-specific sales)
-   ====================== */
-document.addEventListener('click', async (ev)=>{
-  const targ = ev.target.closest('.view-item-sales') || ev.target.closest('.item-view');
-  if(!targ) return;
-  const itemName = decodeURIComponent(targ.dataset.name);
-  const all = await dbGetAll('sales');
-  const related = [];
-  for(const s of all){
-    for(const it of s.items) if(it.name === itemName) related.push({ saleId: s.id, date: s.dateStr, time: formatTime(s.dateTime), qty: it.qty, amount: it.qty*it.price, shift: s.shift });
-  }
-  if(related.length===0) return alert('No sales for this item yet');
-  // show modal-like window (simple)
-  let html = `<div style='font-family:Arial;padding:10px;width:600px;'><h3>${itemName} — Sales</h3><div style='max-height:400px;overflow:auto;'>`;
-  for(const r of related) html += `<div style='display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee;'><div>${r.date} ${r.time} • ${r.shift} • ${r.saleId}</div><div>Qty: ${r.qty} — ₨ ${r.amount}</div></div>`;
-  html += `</div></div>`;
-  const w = window.open('','itemview','width=700,height=500'); w.document.write(html); w.document.close();
-});
-</script>
+function renderCategories(){const catEl=document.getElementById('categoryList');catEl.innerHTML='';const cats=[...new Set(MENU_ITEMS.map(i=>i.category))];const all=document.createElement('div');all.className='category';all.textContent='All';all.onclick=()=>renderMenu();catEl.appendChild(all);cats.forEach(c=>{const d=document.createElement('div');d.className='category';d.textContent=c;d.onclick=()=>renderMenu(MENU_ITEMS.filter(i=>i.category===c));catEl.appendChild(d);});}
+function renderMenu(items=MENU_ITEMS){const c=document.getElementById('menuItems');c.innerHTML='';items.forEach(it=>{const e=document.createElement('div');e.className='menu-item';e.innerHTML=`<span>${it.name}</span><span>₨${it.price}</span>`;e.onclick=()=>addToCart(it);c.appendChild(e);});}
+function filterMenu(){const q=document.getElementById('search').value.toLowerCase();const f=MENU_ITEMS.filter(i=>i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q));renderMenu(f);}
+function addToCart(it){const ex=currentCart.find(x=>x.name===it.name);if(ex)ex.qty++;else currentCart.push({...it,qty:1});updateReceipt();}
+function updateReceipt(){const meta=document.getElementById('receipt-meta');const body=document.getElementById('receipt-body');const tbl=document.getElementById('receipt-items');const tot=document.getElementById('receipt-total');const tval=document.getElementById('receipt-total-value');const pay=document.getElementById('receipt-payment');
+if(!currentCart.length){meta.textContent='No items';tbl.style.display=tot.style.display=pay.style.display='none';return;}
+meta.textContent=new Date().toLocaleString();tbl.style.display=tot.style.display=pay.style.display='block';
+body.innerHTML='';let total=0;currentCart.forEach(it=>{total+=it.price*it.qty;const r=document.createElement('tr');r.innerHTML=`<td>${it.name}</td><td>${it.qty}</td><td>${it.price*it.qty}</td>`;body.appendChild(r);});
+tval.textContent='₨'+total;pay.textContent='Total: ₨'+total;}
+function onPaymentTypeChange(){const t=document.getElementById('paymentType').value;document.getElementById('cashReceivedLabel').style.display=t==='Cash'?'flex':'none';updateChange();}
+function updateChange(){const t=document.getElementById('paymentType').value;if(t!=='Cash')return document.getElementById('changeValue').textContent='₨0';let cash=parseFloat(document.getElementById('cashReceived').value||0);let total=currentCart.reduce((a,b)=>a+b.price*b.qty,0);let change=cash-total;if(change<0)change=0;document.getElementById('changeValue').textContent='₨'+change;}
+function saveOrder(){if(!currentCart.length)return alert('Cart empty');let order={id:Date.now(),cashier:document.getElementById('cashier').value,payment:document.getElementById('paymentType').value,items:currentCart,date:new Date().toLocaleString(),total:currentCart.reduce((a,b)=>a+b.price*b.qty,0)};addOrderToDB(order).then(()=>{alert('Order saved');clearCart();}).catch(e=>alert('DB error '+e));}
+function clearCart(){currentCart=[];updateReceipt();}
+function printReceipt(){const r=document.getElementById('receipt').cloneNode(true);r.id='printableReceipt';document.body.appendChild(r);window.print();r.remove();}
+function exportPDF(){if(!currentCart.length)return alert('Cart empty');const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:[80,200]});doc.setFont('courier','normal');doc.text('BUNKER LUXURY',30,10);let y=20;currentCart.forEach(it=>{doc.text(`${it.name} x${it.qty} - ₨${it.price*it.qty}`,4,y);y+=6;});y+=4;doc.text('Total ₨'+currentCart.reduce((a,b)=>a+b.price*b.qty,0),4,y);doc.save('receipt.pdf');}
+function switchTab(tab){if(tab==='report'){document.getElementById('pos-content').style.display='none';document.getElementById('report-section').style.display='block';document.getElementById('tab-pos').classList.remove('active');document.getElementById('tab-report').classList.add('active');renderReport();}else{document.getElementById('pos-content').style.display='flex';document.getElementById('report-section').style.display='none';document.getElementById('tab-pos').classList.add('active');document.getElementById('tab-report').classList.remove('active');}}
+async function renderReport(){const orders=await getAllOrders();const type=document.getElementById('reportType').value;const cashier=document.getElementById('reportCashier').value;const item=document.getElementById('reportItem').value.toLowerCase();const cat=document.getElementById('reportCategory').value.toLowerCase();const s=document.getElementById('startDate').value;const e=document.getElementById('endDate').value;let f=orders.filter(o=>(!cashier||o.cashier===cashier)&&(!s||new Date(o.date)>=new Date(s))&&(!e||new Date(o.date)<=new Date(e)));if(item)f=f.filter(o=>o.items.some(i=>i.name.toLowerCase().includes(item)));if(cat)f=f.filter(o=>o.items.some(i=>i.category.toLowerCase().includes(cat)));let out=document.getElementById('report-output');out.innerHTML='';if(!f.length){out.textContent='No records';return;}
+if(type==='all'){let html='<table class="receipt-items"><tr><th>Date</th><th>Cashier</th><th>Total</th></tr>';f.forEach(o=>html+=`<tr><td>${o.date}</td><td>${o.cashier}</td><td>₨${o.total}</td></tr>`);html+='</table>';out.innerHTML=html;}else if(type==='cashier'){let g={};f.forEach(o=>g[o.cashier]=(g[o.cashier]||0)+o.total);out.innerHTML='<table class="receipt-items"><tr><th>Cashier</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}else if(type==='item'){let g={};f.forEach(o=>o.items.forEach(i=>g[i.name]=(g[i.name]||0)+i.price*i.qty));out.innerHTML='<table class="receipt-items"><tr><th>Item</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}else if(type==='category'){let g={};f.forEach(o=>o.items.forEach(i=>g[i.category]=(g[i.category]||0)+i.price*i.qty));out.innerHTML='<table class="receipt-items"><tr><th>Category</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}else if(type==='date'){let g={};f.forEach(o=>{let d=o.date.split(',')[0];g[d]=(g[d]||0)+o.total;});out.innerHTML='<table class="receipt-items"><tr><th>Date</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}}
+openDB().then(()=>{renderCategories();renderMenu();updateReceipt();});
+  </script>
 </body>
 </html>
