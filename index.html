@@ -16,10 +16,92 @@
     .menu{width:68%;background:var(--panel);padding:12px;overflow:auto;border-right:2px solid var(--gold)}
     .menu h3{border-bottom:1px solid var(--gold);padding-bottom:6px;margin:0 0 8px 0}
     .menu input{width:100%;padding:8px;margin-bottom:10px;background:WHITE;border:0;color:gold;border-radius:6px}
-    .category-container{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
-    .category{background:PURPLE;color:gold;padding:8px 14px;border-radius:8px;cursor:pointer}
-    .menu-item{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#1a1a1a;border-radius:8px;margin-bottom:8px;border:1px solid rgba(255,215,0,0.04);cursor:pointer}
-    .menu-item:hover{background:RED}
+    /* 🌟 CATEGORY AREA — premium gold buttons in a flexible row */
+.category-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* Each category button — glassy gold elegance */
+.category {
+  position: relative;
+  background: linear-gradient(145deg, #111 20%, #222 80%);
+  color: var(--gold);
+  padding: 10px 22px;
+  border-radius: 30px;
+  cursor: pointer;
+  border: 1px solid rgba(255,215,0,0.4);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(255,215,0,0.15);
+  transition: all 0.25s ease;
+}
+
+.category:hover {
+  background: linear-gradient(145deg, #2a2a2a 20%, #444 80%);
+  color: #fff;
+  border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(255,215,0,0.5), 0 0 25px rgba(255,215,0,0.3);
+  transform: translateY(-3px) scale(1.05);
+}
+
+.category:active {
+  transform: scale(0.97);
+}
+
+/* 🌟 MENU GRID — perfectly aligned modern item boxes */
+#menuItems {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+/* Each drink/food item box */
+.menu-item {
+  background: radial-gradient(circle at top, #222 0%, #111 90%);
+  border: 1.5px solid rgba(255, 215, 0, 0.3);
+  border-radius: 14px;
+  padding: 16px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  color:red;
+  background-color: white;
+  font-weight: 600;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Soft gold glow hover */
+.menu-item:hover {
+  background: radial-gradient(circle at top, rgba(255,215,0,0.15) 0%, #111 90%);
+  border-color: var(--gold);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 4px 18px rgba(255,215,0,0.35);
+}
+
+/* Menu text styling */
+.menu-item span:first-child {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--gold);
+}
+
+.menu-item span:last-child {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+
     .pos{width:40%;background:var(--bg);padding:16px;display:flex;flex-direction:column;align-items:center;border-left:10px solid var(--gold)}
     .receipt-card{width:100%;background:#000;color:gold;padding:18px;border-radius:20px;border:3px solid rgba(255,215,0,0.06);font-family:monospace}
     @media print {
@@ -64,6 +146,171 @@
       #printableReceipt p, #printableReceipt table {font-size:10pt}
     }
     @media (max-width:900px){.menu{width:100%;height:50vh}.pos{width:100%}.content{flex-direction:column}}
+   /* 🌟 GOLD-BLACK PREMIUM THEME */
+
+.report-container {
+  background: #111; /* Deep black background */
+  padding: 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.1);
+  max-width: 1200px;
+  margin: 30px auto;
+  color: #f8f8f8;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.report-container:hover {
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.25);
+}
+
+.report-filter {
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 22px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.report-filter:hover {
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.filter-row label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #d4af37;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.filter-row input,
+.filter-row select {
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  min-width: 140px;
+  background: #111;
+  color: #f8f8f8;
+  transition: all 0.3s ease;
+}
+
+.filter-row input:focus,
+.filter-row select:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+}
+
+.button-group {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+
+.action {
+  background: linear-gradient(90deg, #b8860b, #ffd700);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 9px 18px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action:hover {
+  background: linear-gradient(90deg, #ffd700, #b8860b);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  transform: translateY(-2px);
+}
+
+.ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 9px 16px;
+  color: #ffd700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ghost:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: #ffd700;
+  transform: translateY(-2px);
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.summary-cards .card {
+  background: #1b1b1b;
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.summary-cards .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
+}
+
+.summary-cards .card h3 {
+  color: #ffd700;
+  margin-bottom: 8px;
+  font-size: 1.2rem;
+}
+
+.summary-cards .card p {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.report-output {
+  background: #0f0f0f;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.25);
+  transition: all 0.3s ease;
+}
+
+.report-output:hover {
+  box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+/* ✨ Responsive tweak */
+@media (max-width: 600px) {
+  .filter-row input,
+  .filter-row select {
+    width: 100%;
+  }
+
+  .button-group {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -125,38 +372,110 @@ For more information, please contact: 0325-8575790</div>
         </div>
       </div>
     </div>
+    <!-- 🟡 Dashboard summary cards -->
+<div id="dashboard" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
+    <div style="font-size:14px;color:var(--muted)">Total Orders</div>
+    <div id="totalOrders" style="font-size:22px;font-weight:700">0</div>
+  </div>
+  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
+    <div style="font-size:14px;color:var(--muted)">Total Cash</div>
+    <div id="totalCash" style="font-size:22px;font-weight:700">₨0</div>
+  </div>
+  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
+    <div style="font-size:14px;color:var(--muted)">Total Online</div>
+    <div id="totalOnline" style="font-size:22px;font-weight:700">₨0</div>
+  </div>
+  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
+    <div style="font-size:14px;color:var(--muted)">Top Cashier</div>
+    <div id="topCashier" style="font-size:22px;font-weight:700">-</div>
+  </div>
+  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
+    <div style="font-size:14px;color:var(--muted)">Top Item</div>
+    <div id="topItem" style="font-size:22px;font-weight:700">-</div>
+  </div>
+</div>
+<div id="report-section" class="report-container" style="display:none; font-family: 'Inter', sans-serif;">
+  <h2 style="text-align:center; margin-top:0; font-size:1.8rem; color:#333;">📊 Sales Reports</h2>
 
-    <div id="report-section" class="report-container" style="display:none">
-      <h2 style="text-align:center;margin-top:0">📊 Sales Reports</h2>
-      <div class="report-filter">
-        <div class="filter-row">
-          <label>Report Type:
-            <select id="reportType" onchange="renderReport()">
-              <option value="all">All Orders</option>
-              <option value="cashier">By Cashier</option>
-              <option value="item">By Item</option>
-              <option value="category">By Category</option>
-              <option value="date">By Date</option>
-            </select>
-          </label>
-          <label>Cashier:<select id="reportCashier" onchange="renderReport()"><option value="">Any</option><option>Cashier 1</option><option>Cashier 2</option></select></label>
-          <label>Item:<input id="reportItem" placeholder="Item name" oninput="renderReport()" /></label>
-          <label>Category:<input id="reportCategory" placeholder="Category" oninput="renderReport()" /></label>
-          <label>Start:<input type="date" id="startDate" onchange="renderReport()" /></label>
-          <label>End:<input type="date" id="endDate" onchange="renderReport()" /></label>
-          <div style="margin-left:auto;">
-            <button class="action" onclick="renderReport()">FILTER</button>
-            <button class="ghost" onclick="switchTab('pos')">← Back</button>
-          </div>
-        </div>
+  <div class="report-filter">
+    <div class="filter-row">
+      <label>
+        <span>Report Type:</span>
+        <select id="reportType" onchange="renderReport()">
+          <option value="all">All Orders</option>
+          <option value="cashier">By Cashier</option>
+          <option value="item">By Item</option>
+          <option value="category">By Category</option>
+          <option value="date">By Date</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Cashier:</span>
+        <select id="reportCashier" onchange="renderReport()">
+          <option value="">Any</option>
+          <option>Cashier 1</option>
+          <option>Cashier 2</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Item:</span>
+        <input id="reportItem" placeholder="Item name" oninput="renderReport()" />
+      </label>
+
+      <label>
+        <span>Category:</span>
+        <input id="reportCategory" placeholder="Category" oninput="renderReport()" />
+      </label>
+
+      <label>
+        <span>Start:</span>
+        <input type="date" id="startDate" onchange="renderReport()" />
+      </label>
+
+      <label>
+        <span>End:</span>
+        <input type="date" id="endDate" onchange="renderReport()" />
+      </label>
+
+      <div class="button-group">
+        <button class="action" onclick="renderReport()">FILTER</button>
+        <button class="ghost" onclick="switchTab('pos')">← Back</button>
       </div>
-      <div id="report-summary" class="summary-cards"></div>
-      <div id="report-output"></div>
     </div>
   </div>
 
+  <div id="report-summary" class="summary-cards"></div>
+  <div id="report-output" class="report-output"></div>
+</div>
+
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
+    // 🌟 GOLD SVG ICONS FOR EACH CATEGORY
+const CATEGORY_SVGS = {
+  'Tea': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M2 19h20v2H2zm15-6a5 5 0 0 0-5 5h10a5 5 0 0 0-5-5zM6 3v8a5 5 0 0 0 10 0V3z"/></svg>',
+  'Coffee': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M18 8h3a3 3 0 0 1 0 6h-3v2a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8zM3 4h18v2H3zM18 12h3a1 1 0 0 0 0-2h-3z"/></svg>',
+  'Iced Coffee': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#00BFFF"><path d="M7 2l1 18h8l1-18zM9 4h6v2H9zM11 6h2v10h-2z"/></svg>',
+  'Iced Tea': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#87CEFA"><path d="M4 2h16v2H4zM6 4h12l-1 16H7z"/></svg>',
+  'Lemonade': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD93D"><circle cx="12" cy="12" r="5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M19.1 4.9l-2.8 2.8M7.7 16.3l-2.8 2.8"/></svg>',
+  'Frappe': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#D1A054"><path d="M8 2h8l1 6H7zM7 8h10l-1 12H8z"/></svg>',
+  'Shake': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFB6C1"><path d="M7 2h10l1 4H6zM6 6h12l-1 14H7z"/></svg>',
+  'Hot Choc': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#A0522D"><path d="M5 4h14v10a5 5 0 0 1-5 5H5zM19 8h2v3h-2z"/></svg>',
+  'Matcha': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#00C851"><circle cx="12" cy="12" r="5"/><path d="M2 12h4M18 12h4"/></svg>',
+  'Smoothie': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FF69B4"><path d="M8 2h8l2 20H6zM10 6h4v10h-4z"/></svg>',
+  'Slushee': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#87CEEB"><path d="M7 2h10l1 6H6zM6 8h12l-1 14H7z"/></svg>',
+  'Sandwich': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#F4A460"><path d="M2 7l10-5 10 5v10l-10 5-10-5zM4 9v6l8 4 8-4V9L12 5z"/></svg>',
+  'Breakfast': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFA500"><path d="M12 3a9 9 0 0 1 0 18 9 9 0 1 1 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>',
+  'Pasta': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#F5DEB3"><path d="M3 12h18v2H3zm0 4h18v2H3zM3 8h18v2H3z"/></svg>',
+  'Donut': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FF69B4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="#1a1a1a"/></svg>',
+  'Brownie': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#8B4513"><rect x="4" y="6" width="16" height="12" rx="2"/></svg>',
+  'Finished Goods': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M3 20v-2l9-6 9 6v2H3zM3 8l9 6 9-6V6H3z"/></svg>',
+  'Disposable': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#999"><path d="M5 3h14l-1 18H6zM8 6h8v2H8z"/></svg>',
+};
+
 const MENU_ITEMS = [
   // Tea
   {name:'Green Tea',price:80,category:'Tea'},
@@ -165,7 +484,7 @@ const MENU_ITEMS = [
   // Coffee
   {name:'Espresso',price:180,category:'Coffee'},
   {name:'Americano',price:180,category:'Coffee'},
-  {name:'Cappuccino/Latte',price:330,category:'Coffee'},
+  {name:'Cappuccino/Latte',price:280,category:'Coffee'},
   {name:'Spanish Latte',price:330,category:'Coffee'},
   {name:'French Vanilla Latte',price:330,category:'Coffee'},
   {name:'Dark Mocha Latte',price:330,category:'Coffee'},
@@ -258,15 +577,60 @@ const MENU_ITEMS = [
   // Disposable
   {name:'Cup',price:10,category:'Disposable'},
   {name:'Glass',price:10,category:'Disposable'},
+
+  // water
+  {name:'water',price:60,category:'water'},
+
 ];
 
 let currentCart=[];let db;
 // DB open/save same logic
-function openDB(){return new Promise((res,rej)=>{const r=indexedDB.open('bunker-pos-db',1);r.onupgradeneeded=e=>{const _db=e.target.result;if(!_db.objectStoreNames.contains('orders'))_db.createObjectStore('orders',{keyPath:'id'})};r.onsuccess=e=>{db=e.target.result;res(db)};r.onerror=e=>rej(e.target.error);});}
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r = indexedDB.open('bunker-pos-db', 2); // bump version so upgrade runs again
+    r.onupgradeneeded = e => {
+      const _db = e.target.result;
+
+      if(!_db.objectStoreNames.contains('orders'))
+        _db.createObjectStore('orders',{keyPath:'id'});
+
+      if(!_db.objectStoreNames.contains('dailyTotals'))
+        _db.createObjectStore('dailyTotals',{keyPath:'date'});
+    };
+
+    r.onsuccess = e => {
+      db = e.target.result;
+      res(db);
+    };
+    r.onerror = e => rej(e.target.error);
+  });
+}
+
 function addOrderToDB(order){return new Promise((res,rej)=>{const tx=db.transaction('orders','readwrite');tx.objectStore('orders').add(order);tx.oncomplete=()=>res(true);tx.onerror=e=>rej(e.target.error);});}
 function getAllOrders(){return new Promise((res,rej)=>{const tx=db.transaction('orders','readonly');const s=tx.objectStore('orders');const req=s.getAll();req.onsuccess=()=>res(req.result||[]);req.onerror=e=>rej(e.target.error);});}
 
-function renderCategories(){const catEl=document.getElementById('categoryList');catEl.innerHTML='';const cats=[...new Set(MENU_ITEMS.map(i=>i.category))];const all=document.createElement('div');all.className='category';all.textContent='All';all.onclick=()=>renderMenu();catEl.appendChild(all);cats.forEach(c=>{const d=document.createElement('div');d.className='category';d.textContent=c;d.onclick=()=>renderMenu(MENU_ITEMS.filter(i=>i.category===c));catEl.appendChild(d);});}
+function renderCategories() {
+  const catEl = document.getElementById('categoryList');
+  catEl.innerHTML = '';
+
+  const cats = [...new Set(MENU_ITEMS.map(i => i.category))];
+
+  // “All” button
+  const all = document.createElement('div');
+  all.className = 'category';
+  all.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M12 2l2.4 7.2H22l-6 4.4 2.4 7.2L12 16.4l-6.4 4.4L8 13.6 2 9.2h7.6z"/></svg> All`;
+  all.onclick = () => renderMenu();
+  catEl.appendChild(all);
+
+  cats.forEach(c => {
+    const d = document.createElement('div');
+    d.className = 'category';
+    const icon = CATEGORY_SVGS[c] || '';
+    d.innerHTML = `${icon} <span>${c}</span>`;
+    d.onclick = () => renderMenu(MENU_ITEMS.filter(i => i.category === c));
+    catEl.appendChild(d);
+  });
+}
 function renderMenu(items=MENU_ITEMS){const c=document.getElementById('menuItems');c.innerHTML='';items.forEach(it=>{const e=document.createElement('div');e.className='menu-item';e.innerHTML=`<span>${it.name}</span><span>₨${it.price}</span>`;e.onclick=()=>addToCart(it);c.appendChild(e);});}
 function filterMenu(){const q=document.getElementById('search').value.toLowerCase();const f=MENU_ITEMS.filter(i=>i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q));renderMenu(f);}
 function addToCart(it){const ex=currentCart.find(x=>x.name===it.name);if(ex)ex.qty++;else currentCart.push({...it,qty:1});updateReceipt();}
@@ -279,12 +643,184 @@ function onPaymentTypeChange(){const t=document.getElementById('paymentType').va
 function updateChange(){const t=document.getElementById('paymentType').value;if(t!=='Cash')return document.getElementById('changeValue').textContent='₨0';let cash=parseFloat(document.getElementById('cashReceived').value||0);let total=currentCart.reduce((a,b)=>a+b.price*b.qty,0);let change=cash-total;if(change<0)change=0;document.getElementById('changeValue').textContent='₨'+change;}
 function saveOrder(){if(!currentCart.length)return alert('Cart empty');let order={id:Date.now(),cashier:document.getElementById('cashier').value,payment:document.getElementById('paymentType').value,items:currentCart,date:new Date().toLocaleString(),total:currentCart.reduce((a,b)=>a+b.price*b.qty,0)};addOrderToDB(order).then(()=>{alert('Order saved');clearCart();}).catch(e=>alert('DB error '+e));}
 function clearCart(){currentCart=[];updateReceipt();}
-function printReceipt(){const r=document.getElementById('receipt').cloneNode(true);r.id='printableReceipt';document.body.appendChild(r);window.print();r.remove();}
+function printReceipt(){
+  if(!currentCart.length) return alert('Cart empty');
+
+  // 👇 Save order automatically before printing
+  let order = {
+    id: Date.now(),
+    cashier: document.getElementById('cashier').value,
+    payment: document.getElementById('paymentType').value,
+    items: currentCart,
+    date: new Date().toLocaleString(),
+    total: currentCart.reduce((a,b)=>a+b.price*b.qty,0)
+  };
+
+  addOrderToDB(order)
+    .then(() => {
+      console.log('Order auto-saved before print');
+
+      // 👇 Now print as before
+      const r = document.getElementById('receipt').cloneNode(true);
+      r.id = 'printableReceipt';
+      document.body.appendChild(r);
+      window.print();
+      r.remove();
+
+      // Optionally clear cart after print
+      clearCart();
+    })
+    .catch(e => alert('DB error ' + e));
+}
 function exportPDF(){if(!currentCart.length)return alert('Cart empty');const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:[80,200]});doc.setFont('courier','normal');doc.text('BUNKER LUXURY',30,10);let y=20;currentCart.forEach(it=>{doc.text(`${it.name} x${it.qty} - ₨${it.price*it.qty}`,4,y);y+=6;});y+=4;doc.text('Total ₨'+currentCart.reduce((a,b)=>a+b.price*b.qty,0),4,y);doc.save('receipt.pdf');}
 function switchTab(tab){if(tab==='report'){document.getElementById('pos-content').style.display='none';document.getElementById('report-section').style.display='block';document.getElementById('tab-pos').classList.remove('active');document.getElementById('tab-report').classList.add('active');renderReport();}else{document.getElementById('pos-content').style.display='flex';document.getElementById('report-section').style.display='none';document.getElementById('tab-pos').classList.add('active');document.getElementById('tab-report').classList.remove('active');}}
-async function renderReport(){const orders=await getAllOrders();const type=document.getElementById('reportType').value;const cashier=document.getElementById('reportCashier').value;const item=document.getElementById('reportItem').value.toLowerCase();const cat=document.getElementById('reportCategory').value.toLowerCase();const s=document.getElementById('startDate').value;const e=document.getElementById('endDate').value;let f=orders.filter(o=>(!cashier||o.cashier===cashier)&&(!s||new Date(o.date)>=new Date(s))&&(!e||new Date(o.date)<=new Date(e)));if(item)f=f.filter(o=>o.items.some(i=>i.name.toLowerCase().includes(item)));if(cat)f=f.filter(o=>o.items.some(i=>i.category.toLowerCase().includes(cat)));let out=document.getElementById('report-output');out.innerHTML='';if(!f.length){out.textContent='No records';return;}
-if(type==='all'){let html='<table class="receipt-items"><tr><th>Date</th><th>Cashier</th><th>Total</th></tr>';f.forEach(o=>html+=`<tr><td>${o.date}</td><td>${o.cashier}</td><td>₨${o.total}</td></tr>`);html+='</table>';out.innerHTML=html;}else if(type==='cashier'){let g={};f.forEach(o=>g[o.cashier]=(g[o.cashier]||0)+o.total);out.innerHTML='<table class="receipt-items"><tr><th>Cashier</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}else if(type==='item'){let g={};f.forEach(o=>o.items.forEach(i=>g[i.name]=(g[i.name]||0)+i.price*i.qty));out.innerHTML='<table class="receipt-items"><tr><th>Item</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}else if(type==='category'){let g={};f.forEach(o=>o.items.forEach(i=>g[i.category]=(g[i.category]||0)+i.price*i.qty));out.innerHTML='<table class="receipt-items"><tr><th>Category</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}else if(type==='date'){let g={};f.forEach(o=>{let d=o.date.split(',')[0];g[d]=(g[d]||0)+o.total;});out.innerHTML='<table class="receipt-items"><tr><th>Date</th><th>Total</th></tr>'+Object.entries(g).map(([k,v])=>`<tr><td>${k}</td><td>₨${v}</td></tr>`).join('')+'</table>';}}
-openDB().then(()=>{renderCategories();renderMenu();updateReceipt();});
+async function renderReport() {
+  const orders = await getAllOrders();
+  const type = document.getElementById('reportType').value;
+  const cashier = document.getElementById('reportCashier').value;
+  const item = document.getElementById('reportItem').value.toLowerCase();
+  const cat = document.getElementById('reportCategory').value.toLowerCase();
+  const s = document.getElementById('startDate').value;
+  const e = document.getElementById('endDate').value;
+
+  let f = orders.filter(o =>
+    (!cashier || o.cashier === cashier) &&
+    (!s || new Date(o.date) >= new Date(s)) &&
+    (!e || new Date(o.date) <= new Date(e))
+  );
+
+  if (item)
+    f = f.filter(o => o.items.some(i => i.name.toLowerCase().includes(item)));
+  if (cat)
+    f = f.filter(o => o.items.some(i => i.category.toLowerCase().includes(cat)));
+
+  let out = document.getElementById('report-output');
+  out.innerHTML = '';
+
+  if (!f.length) {
+    out.textContent = 'No records';
+    return;
+  }
+
+  // === ALL ===
+  if (type === 'all') {
+    let html = '<table class="receipt-items"><tr><th>Date</th><th>Cashier</th><th>Total</th></tr>';
+    f.forEach(o => html += `<tr><td>${o.date}</td><td>${o.cashier}</td><td>₨${o.total}</td></tr>`);
+    html += '</table>';
+    out.innerHTML = html;
+  }
+
+  // === BY CASHIER ===
+  else if (type === 'cashier') {
+    let g = {};
+    f.forEach(o => g[o.cashier] = (g[o.cashier] || 0) + o.total);
+    out.innerHTML = '<table class="receipt-items"><tr><th>Cashier</th><th>Total</th></tr>' +
+      Object.entries(g).map(([k, v]) => `<tr><td>${k}</td><td>₨${v}</td></tr>`).join('') +
+      '</table>';
+  }
+
+  // === BY ITEM (Now with Qty) ===
+  else if (type === 'item') {
+    let g = {};
+    f.forEach(o => o.items.forEach(i => {
+      if (!g[i.name]) g[i.name] = { total: 0, qty: 0 };
+      g[i.name].total += i.price * i.qty;
+      g[i.name].qty += i.qty;
+    }));
+    out.innerHTML = '<table class="receipt-items"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>' +
+      Object.entries(g).map(([name, val]) =>
+        `<tr><td>${name}</td><td>${val.qty}</td><td>₨${val.total}</td></tr>`
+      ).join('') + '</table>';
+  }
+
+  // === BY CATEGORY (Now with Qty) ===
+  else if (type === 'category') {
+    let g = {};
+    f.forEach(o => o.items.forEach(i => {
+      if (!g[i.category]) g[i.category] = { total: 0, qty: 0 };
+      g[i.category].total += i.price * i.qty;
+      g[i.category].qty += i.qty;
+    }));
+    out.innerHTML = '<table class="receipt-items"><tr><th>Category</th><th>Qty</th><th>Total</th></tr>' +
+      Object.entries(g).map(([cat, val]) =>
+        `<tr><td>${cat}</td><td>${val.qty}</td><td>₨${val.total}</td></tr>`
+      ).join('') + '</table>';
+  }
+
+  // === BY DATE ===
+  else if (type === 'date') {
+    let g = {};
+    f.forEach(o => {
+      let d = o.date.split(',')[0];
+      g[d] = (g[d] || 0) + o.total;
+    });
+    out.innerHTML = '<table class="receipt-items"><tr><th>Date</th><th>Total</th></tr>' +
+      Object.entries(g).map(([d, v]) =>
+        `<tr><td>${d}</td><td>₨${v}</td></tr>`
+      ).join('') + '</table>';
+  }
+}
+
+async function renderDashboard() {
+  const orders = await getAllOrders();  // 🔹 fix: fetch orders first
+
+  let totalOrders = orders.length;
+  let totalCash = 0;
+  let totalOnline = 0;
+
+  let cashierSales = {};
+  let itemSales = {};
+
+  orders.forEach(order => {
+    let orderTotal = order.items.reduce((sum, i) => sum + i.price * i.qty, 0);
+
+    // Payment totals
+    if (order.payment === "Cash") totalCash += orderTotal;
+    else if (order.payment === "Online") totalOnline += orderTotal;
+
+    // Cashier totals
+    cashierSales[order.cashier] = (cashierSales[order.cashier] || 0) + orderTotal;
+
+    // Item totals
+    order.items.forEach(i => {
+      itemSales[i.name] = (itemSales[i.name] || 0) + i.qty;
+    });
+  });
+
+  document.getElementById("totalOrders").textContent = totalOrders;
+  document.getElementById("totalCash").textContent = `₨${totalCash}`;
+  document.getElementById("totalOnline").textContent = `₨${totalOnline}`;
+
+  // Top cashier
+  document.getElementById("topCashier").textContent =
+    Object.keys(cashierSales).length
+      ? Object.entries(cashierSales).sort((a,b)=>b[1]-a[1])[0][0]
+      : "-";
+
+  // Top item
+  document.getElementById("topItem").textContent =
+    Object.keys(itemSales).length
+      ? Object.entries(itemSales).sort((a,b)=>b[1]-a[1])[0][0]
+      : "-";
+}
+
+// ✅ call after DB is ready
+openDB().then(() => {
+  renderCategories();
+  renderMenu();
+  updateReceipt();
+  renderDashboard(); // ✅ safe now
+});
+
+// ⚡ Auto-refresh dashboard + reports every 5 seconds
+setInterval(() => {
+  renderDashboard();
+  if (document.getElementById("report-section").style.display === "block") {
+    renderReport();
+  }
+}, 5000);
+
+
   </script>
 </body>
 </html>
