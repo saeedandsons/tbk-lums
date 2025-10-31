@@ -1,0 +1,169 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>BUNKER LOGIN</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    body {
+      background: radial-gradient(circle at top, #1a1a1a 0%, #000 80%);
+      color: #ffd700;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .login-container {
+      background: rgba(255, 215, 0, 0.08);
+      border: 1.5px solid #ffd700;
+      border-radius: 16px;
+      padding: 45px 35px;
+      text-align: center;
+      width: 360px;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.5), inset 0 0 20px rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(6px);
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo-placeholder {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 25px;
+      border: 2px dashed #ffd700;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: rgba(255, 215, 0, 0.05);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+      transition: 0.4s;
+    }
+    .logo-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      transition: 0.4s ease;
+    }
+    .logo-placeholder:hover {
+      background: rgba(255, 215, 0, 0.15);
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+    }
+    .logo-placeholder:hover img { transform: scale(1.08); }
+    h2 {
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      color: #ffe066;
+      text-shadow: 0 0 8px #ffd700;
+    }
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 6px;
+      outline: none;
+      text-align: center;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    input::placeholder {
+      color: #e4c34f;
+      opacity: 0.8;
+    }
+    input:focus {
+      box-shadow: 0 0 12px #ffd700;
+      background: rgba(255, 215, 0, 0.15);
+    }
+    button {
+      width: 95%;
+      padding: 12px;
+      background: linear-gradient(90deg, #ffd700, #ffea00);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      margin-top: 10px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    }
+    button:hover {
+      background: linear-gradient(90deg, #fff16b, #ffd700);
+      box-shadow: 0 0 25px #ffd700;
+      transform: scale(1.03);
+    }
+    #msg {
+      margin-top: 15px;
+      font-weight: bold;
+      min-height: 20px;
+      color: #ffe066;
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+    }
+    @media (max-width: 500px) {
+      .login-container { width: 85%; padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo-placeholder">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_3ILDf3EYVgTj61rb2g1TPkSAIGbKCCVJGQ&s" alt="Bunker Logo">
+    </div>
+    <h2>BUNKER LOGIN</h2>
+
+    <input id="email" type="email" placeholder="Enter Email">
+    <input id="password" type="password" placeholder="Enter Password">
+    <button onclick="login()">LOGIN</button>
+
+    <div id="msg"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyC-DRIdb__0Exl2K45YJ0zFlbhPbi9KU-A",
+      authDomain: "bunker-cafe.firebaseapp.com",
+      projectId: "bunker-cafe",
+      storageBucket: "bunker-cafe.firebasestorage.app",
+      messagingSenderId: "2914597895",
+      appId: "1:2914597895:web:73b2173d2fc965a5593ea2",
+      measurementId: "G-89HZV2XMZR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    window.login = function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const msg = document.getElementById("msg");
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          msg.textContent = "✅ Access Granted. Welcome sir.";
+          msg.style.color = "#00ff66";
+          setTimeout(() => window.location.href = "index.html", 1);
+        })
+        .catch((error) => {
+          msg.textContent = "❌ " + error.message;
+          msg.style.color = "#ff6666";
+        });
+    };
+  </script>
+</body>
+</html>
