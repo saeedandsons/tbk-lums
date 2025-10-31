@@ -1,487 +1,609 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>BUNKER POS — Thermal Receipt Ready</title>
-  <style>
-    :root{--bg:#1a1a1a;--panel:#111;--muted:#d4af37;--gold:#ffd700;}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--gold);}
-    header{background:#000;padding:12px;text-align:center;font-size:24px;font-weight:700;color:gold}
-    nav{display:flex;background:#000}
-    nav button{flex:1;padding:12px;font-size:15px;color:gold;background:#111;border:0;cursor:pointer}
-    nav button.active{background:#333}
-    .container{display:flex;height:calc(100vh - 80px);flex-direction:column}
-    .content{display:flex;flex:1;justify-content:space-between}
-    .menu{width:68%;background:var(--panel);padding:12px;overflow:auto;border-right:2px solid var(--gold)}
-    .menu h3{border-bottom:1px solid var(--gold);padding-bottom:6px;margin:0 0 8px 0}
-    .menu input{width:100%;padding:8px;margin-bottom:10px;background:WHITE;border:0;color:gold;border-radius:6px}
-    /* 🌟 CATEGORY AREA — premium gold buttons in a flexible row */
-.category-container {
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BUNKER CAFE - POS</title>
+
+<style>
+  body {
+    background-color: #000;
+    color: #f5f5f5;
+    font-family: 'Poppins', sans-serif;
+    margin: 0; padding: 0;
+  }
+
+  header {
+    background: linear-gradient(90deg, #111, #222);
+    color: gold;
+    text-align: center;
+    padding: 18px;
+    font-size: 1.5em;
+    letter-spacing: 2px;
+    border-bottom: 1px solid gold;
+  }
+
+  .topnav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    background: #111;
+    padding: 10px;
+    border-bottom: 1px solid gold;
+  }
+
+  .topnav button {
+    background: #222;
+    color: gold;
+    border: 1px solid gold;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .topnav button:hover,
+  .topnav button.active {
+    background: gold;
+    color: black;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 10px;
+  }
+
+  .section {
+    border: 1px solid gold;
+    background: #111;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 25px;
+  }
+
+  h2 {
+    text-align: center;
+    color: gold;
+  }
+
+  /* 🖤 GLOBAL BUNKER THEME */
+body {
+  background: #000;
+  color: #ffd700;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+/* SECTION HEADINGS */
+h2 {
+  color: #fff16b;
+  text-shadow: 0 0 12px #ffd700, 0 0 24px rgba(255, 215, 0, 0.6);
+  font-size: 28px;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+/* 🧱 BASE LAYOUT */
+body {
+  background: #000;
+  color: #ffd700;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+/* ⚡ FILTERS */
+.filters {
+  margin: 15px auto 25px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.filters select,
+.filters input {
+  background: rgba(20, 20, 20, 0.9);
+  border: 1px solid #ffb300;
+  border-radius: 8px;
+  color: #ffdd66;
+  padding: 8px 14px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 6px rgba(255, 179, 0, 0.3);
+}
+
+.filters select:focus,
+.filters input:focus {
+  outline: none;
+  box-shadow: 0 0 18px #ffb300, 0 0 35px rgba(255, 179, 0, 0.5);
+  transform: scale(1.03);
+}
+
+/* ⚡ POS LAYOUT */
+.pos-layout {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
   justify-content: center;
-  margin-bottom: 20px;
-  margin-top: 10px;
+  gap: 25px;
 }
 
-/* Each category button — glassy gold elegance */
-.category {
-  position: relative;
-  background: linear-gradient(145deg, #111 20%, #222 80%);
-  color: var(--gold);
-  padding: 10px 22px;
-  border-radius: 30px;
-  cursor: pointer;
-  border: 1px solid rgba(255,215,0,0.4);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  box-shadow: 0 2px 8px rgba(255,215,0,0.15);
-  transition: all 0.25s ease;
+/* 🧾 MENU SECTION */
+.menu-section {
+  flex: 1 1 80%;
+  display: flex;
+  justify-content: center;
 }
 
-.category:hover {
-  background: linear-gradient(145deg, #2a2a2a 20%, #444 80%);
-  color: #fff;
-  border-color: var(--gold);
-  box-shadow: 0 0 15px rgba(255,215,0,0.5), 0 0 25px rgba(255,215,0,0.3);
-  transform: translateY(-3px) scale(1.05);
-}
-
-.category:active {
-  transform: scale(0.97);
-}
-
-/* 🌟 MENU GRID — perfectly aligned modern item boxes */
-#menuItems {
+/* 🟨 MENU GRID */
+.menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
-  margin-top: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 18px;
+  width: 90%;
+  margin: 0 auto;
 }
 
-/* Each drink/food item box */
+/* 🍯 MENU ITEM CARD */
 .menu-item {
-  background: radial-gradient(circle at top, #222 0%, #111 90%);
-  border: 1.5px solid rgba(255, 215, 0, 0.3);
+  background: linear-gradient(145deg, #111, #000);
+  border: 1px solid rgba(255, 179, 0, 0.5);
   border-radius: 14px;
-  padding: 16px 10px;
-  text-align: center;
+  padding: 15px;
+  color: #ffdd66;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  color:red;
-  background-color: white;
-  font-weight: 600;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Soft gold glow hover */
-.menu-item:hover {
-  background: radial-gradient(circle at top, rgba(255,215,0,0.15) 0%, #111 90%);
-  border-color: var(--gold);
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 4px 18px rgba(255,215,0,0.35);
-}
-
-/* Menu text styling */
-.menu-item span:first-child {
-  display: block;
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: var(--gold);
-}
-
-.menu-item span:last-child {
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-
-    .pos{width:40%;background:var(--bg);padding:16px;display:flex;flex-direction:column;align-items:center;border-left:10px solid var(--gold)}
-    .receipt-card{width:100%;background:#000;color:gold;padding:18px;border-radius:20px;border:3px solid rgba(255,215,0,0.06);font-family:monospace}
-    @media print {
-  .receipt-header {
-    font-size: 28pt !important; /* bigger for print */
-    font-weight: 900 !important;
-    text-align: center;
-    color: #000 !important;     /* black for clarity */
-    margin-bottom: 15pt;
-  }
-}
-
-    .receipt-meta{font-size:20px;color:var(--muted);margin-bottom:8px}
-    .receipt-items{width:100%;border-collapse:collapse;margin-bottom:8px}
-    .receipt-items th,.receipt-items td{padding:10px;border-bottom:1px dashed rgba(255,215,0,0.06);text-align:left;font-size:20px}
-   .receipt-total {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 900;           /* extra bold */
-  font-size: 22px;            /* larger text */
-  padding: 12px 8px;
-  margin-top: 12px;
-  border-top: 2px solid gold; /* clear divider line */
-  background: rgba(255,215,0,0.1);
-  border-radius: 8px;
-  color: var(--gold);
-}
-
-    .small{font-size:20px;color:var(--muted)}
-    .actions{display:flex;gap:8px;margin-top:10px;width:100%}
-    button.action{flex:1;padding:10px;background:var(--gold);color:#000;border:0;border-radius:6px;cursor:pointer}
-    button.ghost{background:#222;color:gold;border:1px solid rgba(255,215,0,0.06);padding:8px;border-radius:6px;cursor:pointer}
-    label.inline{display:flex;flex-direction:column;font-size:13px;color:var(--muted);width:100%;margin-bottom:8px}
-    input[type="number"], select, input[type="text"]{padding:8px;border-radius:6px;background:#111;color:gold;border:1px solid rgba(255,215,0,0.06)}
-    @media print {
-      @page { size: 1000mm auto; margin: 0; }
-      body * { visibility: hidden; }
-      #printableReceipt, #printableReceipt * { visibility: visible; }
-      #printableReceipt { position: absolute; left: 0; top: 0; width: 80mm; font-family:monospace; color: #000; background: #fff; padding: 6mm; }
-      #printableReceipt h2{font-size:12pt;margin:0 0 6px 0}
-      #printableReceipt p, #printableReceipt table {font-size:10pt}
-    }
-    @media (max-width:900px){.menu{width:100%;height:50vh}.pos{width:100%}.content{flex-direction:column}}
-   /* 🌟 GOLD-BLACK PREMIUM THEME */
-
-.report-container {
-  background: #111; /* Deep black background */
-  padding: 24px 28px;
-  border-radius: 16px;
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.1);
-  max-width: 1200px;
-  margin: 30px auto;
-  color: #f8f8f8;
-  font-family: 'Poppins', sans-serif;
-  transition: all 0.3s ease;
-}
-
-.report-container:hover {
-  box-shadow: 0 0 30px rgba(255, 215, 0, 0.25);
-}
-
-.report-filter {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 215, 0, 0.25);
-  border-radius: 12px;
-  padding: 18px;
-  margin-bottom: 22px;
-  transition: border 0.3s ease, box-shadow 0.3s ease;
-}
-
-.report-filter:hover {
-  border-color: #ffd700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-}
-
-.filter-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-}
-
-.filter-row label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9rem;
-  color: #d4af37;
-  gap: 5px;
-  font-weight: 500;
-}
-
-.filter-row input,
-.filter-row select {
-  padding: 8px 10px;
-  border: 1px solid rgba(255, 215, 0, 0.4);
-  border-radius: 8px;
-  font-size: 0.9rem;
-  min-width: 140px;
-  background: #111;
-  color: #f8f8f8;
-  transition: all 0.3s ease;
-}
-
-.filter-row input:focus,
-.filter-row select:focus {
-  outline: none;
-  border-color: #ffd700;
-  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
-}
-
-.button-group {
-  margin-left: auto;
-  display: flex;
-  gap: 10px;
-}
-
-.action {
-  background: linear-gradient(90deg, #b8860b, #ffd700);
-  color: #000;
-  border: none;
-  border-radius: 8px;
-  padding: 9px 18px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.action:hover {
-  background: linear-gradient(90deg, #ffd700, #b8860b);
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
-  transform: translateY(-2px);
-}
-
-.ghost {
-  background: transparent;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 8px;
-  padding: 9px 16px;
-  color: #ffd700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.ghost:hover {
-  background: rgba(255, 215, 0, 0.1);
-  border-color: #ffd700;
-  transform: translateY(-2px);
-}
-
-.summary-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 18px;
-  margin-bottom: 24px;
-}
-
-.summary-cards .card {
-  background: #1b1b1b;
-  border-radius: 12px;
-  padding: 18px;
+  box-shadow: 0 0 12px rgba(255, 179, 0, 0.15);
   text-align: center;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.08);
-  transition: all 0.3s ease;
 }
 
-.summary-cards .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
+/* 🟡 HOVER EFFECT — Amber Pulse */
+.menu-item:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 25px #ffb300, 0 0 40px rgba(255, 179, 0, 0.5);
+  background: linear-gradient(145deg, #1a1a1a, #000);
 }
 
-.summary-cards .card h3 {
-  color: #ffd700;
-  margin-bottom: 8px;
-  font-size: 1.2rem;
+/* ✨ ACTIVE ITEM (selected) */
+.menu-item.active {
+  border: 1px solid #ffb300;
+  box-shadow: 0 0 25px #ffb300, 0 0 45px rgba(255, 179, 0, 0.6);
+  transform: scale(1.12);
+  animation: amberPulse 1.4s infinite alternate;
 }
 
-.summary-cards .card p {
-  color: #ccc;
-  font-size: 0.9rem;
+/* 🌀 Pulse Animation */
+@keyframes amberPulse {
+  from { box-shadow: 0 0 15px #ffb300; }
+  to { box-shadow: 0 0 35px #ffb300, 0 0 55px rgba(255, 179, 0, 0.6); }
 }
 
-.report-output {
-  background: #0f0f0f;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: inset 0 0 0 1px rgba(255, 215, 0, 0.25);
-  transition: all 0.3s ease;
+/* 🏷 ITEM TITLE */
+.menu-item h4 {
+  margin: 10px 0 5px;
+  font-size: 18px;
+  text-shadow: 0 0 8px rgba(255, 179, 0, 0.4);
 }
 
-.report-output:hover {
-  box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
+/* 💰 PRICE TAG */
+.menu-item .price {
+  font-size: 16px;
+  color: #fff16b;
+  text-shadow: 0 0 6px #ffb300;
 }
 
-/* ✨ Responsive tweak */
-@media (max-width: 600px) {
-  .filter-row input,
-  .filter-row select {
-    width: 100%;
+/* 🔘 BUTTONS */
+button {
+  background: linear-gradient(90deg, #ffb300, #ffd54f);
+  color: #000;
+  font-weight: bold;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 0 12px rgba(255, 179, 0, 0.3);
+}
+
+button:hover {
+  transform: scale(1.08);
+  background: linear-gradient(90deg, #ffd54f, #ffb300);
+  box-shadow: 0 0 20px #ffb300, 0 0 40px rgba(255, 179, 0, 0.6);
+}
+
+/* 🔒 LOGOUT BUTTON (Dark Gold Glow) */
+.logout-btn {
+  float: right;
+  margin-right: 10px;
+  background: linear-gradient(90deg, #000, #111);
+  border: 1px solid #ffb300;
+  color: #ffb300;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 179, 0, 0.3);
+}
+
+.logout-btn:hover {
+  background: linear-gradient(90deg, #111, #000);
+  color: #fff16b;
+  box-shadow: 0 0 25px #ffb300, 0 0 50px rgba(255, 179, 0, 0.6);
+  transform: scale(1.05);
+}
+
+
+
+  
+
+  .cart {
+    background: #111;
+    border: 1px solid gold;
+    border-radius: 10px;
+    padding: 10px;
   }
 
-  .button-group {
+  table {
     width: 100%;
-    justify-content: flex-end;
+    border-collapse: collapse;
+    color: #ddd;
+    margin-top: 10px;
   }
+
+  th, td {
+    border: 1px solid #222;
+    padding: 6px;
+    text-align: center;
+  }
+
+  th {
+    background: gold;
+    color: black;
+  }
+
+  
+
+  .actions button {
+    background: gold;
+    color: black;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  @media print {
+    body { background: #fff; color: #000; font-family: monospace; font-size: 13px; }
+    .no-print { display: none; }
+    h2 { font-size: 1em; margin: 4px 0; text-align: center; }
+    hr { border: none; border-top: 1px dashed #000; margin: 6px 0; }
+    .bold { font-weight: bold; }
+  }
+
+  .pos-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .menu-section { flex: 2; }
+  .cart-section { flex: 1; }
+
+  @media (max-width: 768px) {
+    .pos-layout { flex-direction: column; }
+  }
+  .menu-item {
+  border-radius: 10px;
+  padding: 10px;
+  background: #111;
+  text-align: center;
+  transition: 0.3s;
+  position: relative;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
 }
 
-  </style>
+
+
+    h1 {
+      margin-top: 20px;
+      color: #fff16b;
+      text-shadow: 0 0 10px #ffd700;
+    }
+    button.logout-btn {
+  float: right;
+  margin-right: 10px;
+  background: linear-gradient(90deg, #ffd700, #fff16b);
+  border: none;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+button.logout-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 15px gold, 0 0 25px rgba(255, 215, 0, 0.6);
+  background: linear-gradient(90deg, #fff16b, #ffd700);
+}
+
+
+</style>
 </head>
 <body>
-  <header>🖤 THE BUNKER CAFE LUMS  🖤</header>
-  <nav>
-    <button id="tab-pos" class="active" onclick="switchTab('pos')">POS</button>
-    <button id="tab-report" onclick="switchTab('report')">REPORTS</button>
-  </nav>
+  <button onclick="logout()" style="float:right;margin-right:10px;">Logout</button>
+<header><h1>🖤 THE BUNKER CAFE LUMS 🖤</h1></header>
 
-  <div class="container">
-    <div class="content" id="pos-content">
-      <div class="menu" id="menu">
-        <h3>MENU</h3>
-        <input id="search" placeholder="Search item or category..." oninput="filterMenu()" />
-        <div id="categoryList" class="category-container"></div>
-        <div id="menuItems"></div>
-      </div>
 
-      <div class="pos">
-        <label class="inline">Cashier:
-          <select id="cashier"><option>Cashier 1</option><option>Cashier 2</option></select>
-        </label>
 
-        <div id="receipt" class="receipt-card">
-          <div class="receipt-header">BUNKER CAFE LUMS</div>
-          <div class="receipt-meta" id="receipt-meta">No items</div>
-          <table class="receipt-items" id="receipt-items" style="display:none">
-            <thead><tr><th>Item</th><th>Q</th><th>₨</th></tr></thead>
-            <tbody id="receipt-body"></tbody>
-          </table>
-          <div class="receipt-total" id="receipt-total" style="display:none">
-            <div>Total</div><div id="receipt-total-value">₨0</div>
-          </div>
-          <div id="receipt-payment" style="display:none;margin-top:8px;font-size:13px"></div>
-          <div class="small" style="margin-top:8px;text-align:center">Thank you for visiting!
-Software developed by Muawviz Khan.
-For more information, please contact: 0325-8575790</div>
+<div class="topnav">
+  <button class="active" onclick="switchTab('pos',this)"><h3>🧺🧺🧺MENU</h3></button>
+  <button onclick="switchTab('reports',this)"><h3>💼REPORTS</h3></button>
+  <button onclick="switchTab('handover',this)"><h3>💸💵CASH HAND OVER</h3></button>
+  <button id="btnUserManager" onclick="window.location.href='user-manager.html'"><h3>🕵 User Manager</h3></button>
+
+</div>
+
+<div class="container">
+
+<!-- POS TAB -->
+<div id="tab-pos" class="section" style="display:block;">
+  <h2>💸 POINT OF SALE</h2>
+
+  <div class="filters">
+    <select id="categorySelect" onchange="renderMenu()">
+      <option value="">All Categories</option>
+    </select>
+    <input id="search" placeholder="Search..." oninput="renderMenu()">
+  </div>
+
+  <div class="pos-layout">
+    <!-- MENU -->
+    <div class="menu-section">
+      <div class="menu-grid" id="menuItems"></div>
+    </div>
+
+    <!-- RECEIPT -->
+    <div class="cart-section">
+      <div class="cart">
+        <h3 style="color:gold;">🧾 RECEIPT</h3>
+        <table id="receipt-items">
+          <thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead>
+          <tbody id="receipt-body"></tbody>
+        </table>
+
+        <div id="receipt-total" style="margin-top:8px;text-align:right;font-weight:bold;display:flex;justify-content:space-between;">
+          <span>Total:</span><span id="receipt-total-value">₨0</span>
+        </div>
+        <div>
+          <label>Cashier:</label>
+          <input id="cashier" placeholder="Enter cashier name"
+            style="width:100%;background:#000;color:gold;border:1px solid gold;padding:4px;border-radius:5px;">
         </div>
 
-        <label class="inline">Payment Type:
+        <div style="margin-top:8px;">
+          <label>Payment Type:</label>
           <select id="paymentType" onchange="onPaymentTypeChange()">
-            <option value="Cash">Cash</option>
-            <option value="Online">Online</option>
+            <option>Cash</option>
+            <option>Online</option>
           </select>
-        </label>
-
-        <label class="inline" id="cashReceivedLabel">Cash Received:
-          <input type="number" id="cashReceived" min="0" value="0" onchange="updateChange()" />
-        </label>
-        <div class="small" style="width:100%;text-align:right;margin-bottom:6px">Change: <span id="changeValue">₨0</span></div>
-
-        <div class="actions">
-          <button class="action" onclick="saveOrder()">SAVE ORDER</button>
-          <button class="action" onclick="printReceipt()">PRINT</button>
         </div>
-        <div class="actions" style="margin-top:8px">
-          <button class="ghost" onclick="exportPDF()">EXPORT PDF</button>
-          <button class="ghost" onclick="clearCart()">Clear Cart</button>
+
+        <div style="margin-top:8px;">
+          <label>Order Shift:</label>
+          <select id="orderShift">
+            <option value="Morning">Morning</option>
+            <option value="Evening">Evening</option>
+            
+          </select>
+        </div>
+
+        <div id="cashReceivedLabel" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+          <label>Cash Received:</label>
+          <input id="cashReceived" type="number" value="0" oninput="updateChange()"
+            style="width:100px;background:#000;color:gold;border:1px solid gold;padding:4px;border-radius:5px;">
+        </div>
+
+        <div style="margin-top:6px;text-align:right;">
+          Change: <span id="changeValue">RS0</span>
+        </div>
+
+        <div class="actions" style="margin-top:10px;display:flex;gap:8px;justify-content:space-between;">
+          <button onclick="saveOrder()">Save</button>
+          <button onclick="printReceipt()">Print</button>
+          <button onclick="clearCart()">Clear</button>
         </div>
       </div>
     </div>
-    <!-- 🟡 Dashboard summary cards -->
-<div id="dashboard" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">
-  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
-    <div style="font-size:14px;color:var(--muted)">Total Orders</div>
-    <div id="totalOrders" style="font-size:22px;font-weight:700">0</div>
-  </div>
-  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
-    <div style="font-size:14px;color:var(--muted)">Total Cash</div>
-    <div id="totalCash" style="font-size:22px;font-weight:700">₨0</div>
-  </div>
-  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
-    <div style="font-size:14px;color:var(--muted)">Total Online</div>
-    <div id="totalOnline" style="font-size:22px;font-weight:700">₨0</div>
-  </div>
-  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
-    <div style="font-size:14px;color:var(--muted)">Top Cashier</div>
-    <div id="topCashier" style="font-size:22px;font-weight:700">-</div>
-  </div>
-  <div class="dashboard-card" style="flex:1;padding:12px;background:#111;border:1px solid gold;border-radius:8px;text-align:center;">
-    <div style="font-size:14px;color:var(--muted)">Top Item</div>
-    <div id="topItem" style="font-size:22px;font-weight:700">-</div>
   </div>
 </div>
-<div id="report-section" class="report-container" style="display:none; font-family: 'Inter', sans-serif;">
-  <h2 style="text-align:center; margin-top:0; font-size:1.8rem; color:#333;">📊 Sales Reports</h2>
 
-  <div class="report-filter">
-    <div class="filter-row">
-      <label>
-        <span>Report Type:</span>
-        <select id="reportType" onchange="renderReport()">
-          <option value="all">All Orders</option>
-          <option value="cashier">By Cashier</option>
-          <option value="item">By Item</option>
-          <option value="category">By Category</option>
-          <option value="date">By Date</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Cashier:</span>
-        <select id="reportCashier" onchange="renderReport()">
-          <option value="">Any</option>
-          <option>Cashier 1</option>
-          <option>Cashier 2</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Item:</span>
-        <input id="reportItem" placeholder="Item name" oninput="renderReport()" />
-      </label>
-
-      <label>
-        <span>Category:</span>
-        <input id="reportCategory" placeholder="Category" oninput="renderReport()" />
-      </label>
-
-      <label>
-        <span>Start:</span>
-        <input type="date" id="startDate" onchange="renderReport()" />
-      </label>
-
-      <label>
-        <span>End:</span>
-        <input type="date" id="endDate" onchange="renderReport()" />
-      </label>
-
-      <div class="button-group">
-        <button class="action" onclick="renderReport()">FILTER</button>
-        <button class="ghost" onclick="switchTab('pos')">← Back</button>
-      </div>
-    </div>
+<!-- REPORTS TAB -->
+<div id="tab-reports" class="section">
+  <h2>📊 SALES REPORT</h2>
+  <div class="filters">
+    <input type="date" id="reportDate" onchange="renderReports()">
+    <select id="reportShift" onchange="renderReports()">
+      <option value="">All Shifts</option>
+      <option>Morning</option><option>Evening</option>
+    </select>
+    <select id="reportPayment" onchange="renderReports()">
+      <option value="">All Payments</option>
+      <option>Cash</option><option>Online</option>
+    </select>
+    <select id="reportCategory" onchange="renderReports()">
+      <option value="">All Categories</option>
+    </select>
+    <input id="reportItem" oninput="renderReports()" placeholder="Search item">
+    <select id="viewMode" onchange="renderReports()">
+      <option value="item">Item-wise</option>
+      <option value="order">Order-wise</option>
+    </select>
   </div>
 
-  <div id="report-summary" class="summary-cards"></div>
-  <div id="report-output" class="report-output"></div>
+  <section id="itemView">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th><th>Time</th><th>Shift</th><th>Category</th>
+          <th>Item</th><th>Qty</th><th>Total</th><th>Payment</th>
+        </tr>
+      </thead>
+      <tbody id="reportBody"></tbody>
+      <tfoot>
+        <tr><td colspan="5">TOTAL</td><td id="totalQty">0</td><td id="totalSales">₨0</td><td>-</td></tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <section id="orderView" style="display:none;">
+    <table>
+      <thead><tr><th>Order ID</th><th>Date</th><th>Cashier</th><th>Items</th><th>Total</th><th>Payment</th></tr></thead>
+      <tbody id="orderContainer"></tbody>
+    </table>
+  </section>
 </div>
 
+<!-- HANDOVER TAB -->
+<div id="tab-handover" class="section">
+  <h2>💰 CASH HAND OVER</h2>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    // 🌟 GOLD SVG ICONS FOR EACH CATEGORY
-const CATEGORY_SVGS = {
-  'Tea': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M2 19h20v2H2zm15-6a5 5 0 0 0-5 5h10a5 5 0 0 0-5-5zM6 3v8a5 5 0 0 0 10 0V3z"/></svg>',
-  'Coffee': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M18 8h3a3 3 0 0 1 0 6h-3v2a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8zM3 4h18v2H3zM18 12h3a1 1 0 0 0 0-2h-3z"/></svg>',
-  'Iced Coffee': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#00BFFF"><path d="M7 2l1 18h8l1-18zM9 4h6v2H9zM11 6h2v10h-2z"/></svg>',
-  'Iced Tea': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#87CEFA"><path d="M4 2h16v2H4zM6 4h12l-1 16H7z"/></svg>',
-  'Lemonade': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD93D"><circle cx="12" cy="12" r="5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M19.1 4.9l-2.8 2.8M7.7 16.3l-2.8 2.8"/></svg>',
-  'Frappe': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#D1A054"><path d="M8 2h8l1 6H7zM7 8h10l-1 12H8z"/></svg>',
-  'Shake': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFB6C1"><path d="M7 2h10l1 4H6zM6 6h12l-1 14H7z"/></svg>',
-  'Hot Choc': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#A0522D"><path d="M5 4h14v10a5 5 0 0 1-5 5H5zM19 8h2v3h-2z"/></svg>',
-  'Matcha': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#00C851"><circle cx="12" cy="12" r="5"/><path d="M2 12h4M18 12h4"/></svg>',
-  'Smoothie': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FF69B4"><path d="M8 2h8l2 20H6zM10 6h4v10h-4z"/></svg>',
-  'Slushee': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#87CEEB"><path d="M7 2h10l1 6H6zM6 8h12l-1 14H7z"/></svg>',
-  'Sandwich': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#F4A460"><path d="M2 7l10-5 10 5v10l-10 5-10-5zM4 9v6l8 4 8-4V9L12 5z"/></svg>',
-  'Breakfast': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFA500"><path d="M12 3a9 9 0 0 1 0 18 9 9 0 1 1 0-18zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/></svg>',
-  'Pasta': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#F5DEB3"><path d="M3 12h18v2H3zm0 4h18v2H3zM3 8h18v2H3z"/></svg>',
-  'Donut': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FF69B4"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="#1a1a1a"/></svg>',
-  'Brownie': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#8B4513"><rect x="4" y="6" width="16" height="12" rx="2"/></svg>',
-  'Finished Goods': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M3 20v-2l9-6 9 6v2H3zM3 8l9 6 9-6V6H3z"/></svg>',
-  'Disposable': '<svg viewBox="0 0 24 24" width="18" height="18" fill="#999"><path d="M5 3h14l-1 18H6zM8 6h8v2H8z"/></svg>',
+  <div class="filters">
+    <label>Date:</label>
+    <input type="date" id="handoverDate" value="">
+    <label>Shift:</label>
+    <select id="handoverShift"><option>Morning</option><option>evning</option></select>
+  </div>
+
+  <label>Cashier</label><input id="handoverCashier">
+  <label>Receiver</label><input id="handoverReceiver">
+  <label>Amount</label><input id="handoverAmount" type="number">
+
+  <div class="actions" style="margin-top:10px;">
+    <button onclick="addHandover()">Submit</button>
+    <button onclick="exportHandoverCSV()">Export CSV</button>
+  </div>
+
+  <table style="margin-top:15px;">
+    <thead><tr><th>Date</th><th>Cashier</th><th>Receiver</th><th>Amount</th><th>Shift</th></tr></thead>
+    <tbody id="handoverBody"></tbody>
+  </table>
+  <h4 style="text-align:right;">Total: <span id="handoverTotal">₨0</span></h4>
+</div>
+<script type="module">
+/* ========== BUNKER CAFE - FIREBASE ROLE SYSTEM (Firestore Based) ========== */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  onSnapshot,
+  query,
+  orderBy,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+
+/* ===== FIREBASE CONFIG ===== */
+const firebaseConfig = {
+  apiKey: "AIzaSyC-DRIdb__0Exl2K45YJ0zFlbhPbi9KU-A",
+  authDomain: "bunker-cafe.firebaseapp.com",
+  projectId: "bunker-cafe",
+  storageBucket: "bunker-cafe.firebasestorage.app",
+  messagingSenderId: "2914597895",
+  appId: "1:2914597895:web:73b2173d2fc965a5593ea2",
+  measurementId: "G-89HZV2XMZR"
 };
 
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+window.db = db;
+
+console.log("🔥 Firebase connected (Firestore Role System Active)");
+
+/* ===== AUTH CHECK + FIRESTORE ROLE FETCH ===== */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  console.log("✅ Logged in as:", user.email);
+
+  // --- Get Role From Firestore ---
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  let role = "cashier"; // default if not found
+
+  if (userSnap.exists()) {
+    role = userSnap.data().role || "cashier";
+    console.log("🎭 Role from Firestore:", role);
+  } else {
+    console.warn("⚠️ No role document found for:", user.email);
+    alert("⚠️ Access denied — no role assigned. Contact admin.");
+    await signOut(auth);
+    window.location.href = "login.html";
+    return;
+  }
+
+  window.userRole = role;
+
+  // ✅ Role-based UI Control
+  const reportBtn = document.querySelector('button[onclick*="reports"]');
+  const reportTab = document.getElementById("tab-reports");
+  const handoverTab = document.getElementById("tab-cash");
+  const userManagerBtn = document.getElementById("btnUserManager"); // 👈 NEW button (admin only)
+
+  if (role === "admin") {
+    // Admin → all visible
+    if (reportBtn) reportBtn.style.display = "inline-block";
+    if (reportTab) reportTab.style.display = "block";
+    if (handoverTab) handoverTab.style.display = "block";
+    if (userManagerBtn) userManagerBtn.style.display = "inline-block"; // show User Manager
+  } else if (role === "cashier") {
+    // Cashier → hide reports & user manager
+    if (reportBtn) reportBtn.style.display = "none";
+    if (reportTab) reportTab.style.display = "none";
+    if (handoverTab) handoverTab.style.display = "block";
+    if (userManagerBtn) userManagerBtn.style.display = "none";
+  }
+
+  // ✅ Default tab after login
+  if (typeof switchTab === "function") {
+    const posBtn = document.querySelector('button[onclick*="pos"]');
+    switchTab("pos", posBtn);
+  }
+});
+
+/* ===== LOGOUT FUNCTION ===== */
+window.logout = () => {
+  signOut(auth).then(() => {
+    console.log("🚪 Logged out successfully");
+    window.location.href = "login.html";
+  });
+};
+
+
+
+
+
+/* ---------------- MENU ITEMS ---------------- */
 const MENU_ITEMS = [
-  // Tea
   {name:'Green Tea',price:80,category:'Tea'},
   {name:'Milk Tea',price:100,category:'Tea'},
-
-  // Coffee
   {name:'Espresso',price:180,category:'Coffee'},
   {name:'Americano',price:180,category:'Coffee'},
   {name:'Cappuccino/Latte',price:280,category:'Coffee'},
@@ -492,8 +614,6 @@ const MENU_ITEMS = [
   {name:'Roasted Hazelnut Latte',price:330,category:'Coffee'},
   {name:'Cinnamon Spice Latte',price:330,category:'Coffee'},
   {name:'Sticky Toffee Latte',price:330,category:'Coffee'},
-
-  // Iced Coffee
   {name:'Iced Americano',price:200,category:'Iced Coffee'},
   {name:'Iced Latte',price:300,category:'Iced Coffee'},
   {name:'Iced Spanish Latte',price:380,category:'Iced Coffee'},
@@ -503,69 +623,47 @@ const MENU_ITEMS = [
   {name:'Iced Hazelnut Latte',price:380,category:'Iced Coffee'},
   {name:'Iced Cinnamon Latte',price:380,category:'Iced Coffee'},
   {name:'Iced Toffee Latte',price:380,category:'Iced Coffee'},
-
-  // Iced Tea
   {name:'Peach Iced Tea',price:180,category:'Iced Tea'},
   {name:'Lemon Iced Tea',price:180,category:'Iced Tea'},
   {name:'Strawberry Iced Tea',price:180,category:'Iced Tea'},
-
-  // Lemonade
   {name:'Passion Fruit Lemonade',price:200,category:'Lemonade'},
   {name:'Strawberry Lemonade',price:200,category:'Lemonade'},
   {name:'Mint Lemonade',price:200,category:'Lemonade'},
   {name:'Blue Ocean Lemonade',price:200,category:'Lemonade'},
-
-  // Frappe
   {name:'Virgin Vanilla',price:430,category:'Frappe'},
   {name:'Mean Mocha',price:430,category:'Frappe'},
   {name:'Cool Caramel',price:430,category:'Frappe'},
   {name:'Hero Hazelnut',price:430,category:'Frappe'},
-
-  // Shake
   {name:'Banana Shake',price:280,category:'Shake'},
   {name:'Strawberry Shake',price:330,category:'Shake'},
   {name:'Oreo Shake',price:330,category:'Shake'},
-  {name:'Chocolate Shake',price:330,category:'Shake'},
+  {name:'Chocolate Shake',price:350,category:'Shake'},
   {name:'Lotus Shake',price:350,category:'Shake'},
   {name:'Mango Shake',price:350,category:'Shake'},
   {name:'Power House Shake',price:350,category:'Shake'},
-
-  // Hot Choc
   {name:'Classic Belgian',price:320,category:'Hot Choc'},
   {name:'Banana Hot Choc',price:320,category:'Hot Choc'},
   {name:'Mint Hot Choc',price:320,category:'Hot Choc'},
-
-  // Matcha
   {name:'Vanilla Iced Matcha',price:400,category:'Matcha'},
   {name:'Matcha Frappe',price:500,category:'Matcha'},
-
-  // Smoothie
   {name:'Sunrise',price:350,category:'Smoothie'},
   {name:'Sunset in Paradise',price:350,category:'Smoothie'},
   {name:'Mint Margarita',price:250,category:'Smoothie'},
-
-  // Slushee
   {name:'Blueberry',price:150,category:'Slushee'},
   {name:'Strawberry',price:150,category:'Slushee'},
   {name:'Green Apple',price:150,category:'Slushee'},
   {name:'Mix Berry',price:150,category:'Slushee'},
   {name:'Peach',price:150,category:'Slushee'},
-
-  // Food
   {name:'Cheese Toastie',price:330,category:'Sandwich'},
   {name:'Chicken Panini',price:380,category:'Sandwich'},
   {name:'French Toast',price:300,category:'Breakfast'},
   {name:'Mac and Cheese',price:400,category:'Pasta'},
-
-  // Extras
   {name:'Simple Glazed Donut',price:250,category:'Donut'},
+  {name:'choc sprinkle Donut',price:250,category:'Donut'},
   {name:'Boston Cream Donut',price:300,category:'Donut'},
   {name:'Nutella Donut',price:300,category:'Donut'},
   {name:'Red Velvet Donut',price:300,category:'Donut'},
   {name:'Chocolate Fudge Brownie',price:300,category:'Brownie'},
- 
-
-  // Finished Goods
   {name:'Shahbaz Cookie',price:250,category:'Finished Goods'},
   {name:'Shahbaz Brownie',price:250,category:'Finished Goods'},
   {name:'D Cookie',price:450,category:'Finished Goods'},
@@ -573,254 +671,581 @@ const MENU_ITEMS = [
   {name:'Matilda Cake',price:500,category:'Finished Goods'},
   {name:'Nut Bread',price:250,category:'Finished Goods'},
   {name:'Plain Bread',price:230,category:'Finished Goods'},
-
-  // Disposable
   {name:'Cup',price:10,category:'Disposable'},
   {name:'Glass',price:10,category:'Disposable'},
-
-  // water
   {name:'water',price:60,category:'water'},
-
 ];
 
-let currentCart=[];let db;
-// DB open/save same logic
-function openDB(){
-  return new Promise((res,rej)=>{
-    const r = indexedDB.open('bunker-pos-db', 2); // bump version so upgrade runs again
-    r.onupgradeneeded = e => {
-      const _db = e.target.result;
+/* ---------------- STATE & KEYS ---------------- */
+let CART = [];
+const ORDERS_KEY = 'bunker_orders_v1';
+const HANDOVERS_KEY = 'bunker_handovers_v1';
 
-      if(!_db.objectStoreNames.contains('orders'))
-        _db.createObjectStore('orders',{keyPath:'id'});
+/* ---------------- HELPERS ---------------- */
+function $(id){ return document.getElementById(id); }
+function currency(n){ return '₨'+Number(n).toLocaleString('en-PK'); }
 
-      if(!_db.objectStoreNames.contains('dailyTotals'))
-        _db.createObjectStore('dailyTotals',{keyPath:'date'});
-    };
-
-    r.onsuccess = e => {
-      db = e.target.result;
-      res(db);
-    };
-    r.onerror = e => rej(e.target.error);
-  });
+function formatDateTime(d){
+  const dt = new Date(d);
+  return dt.toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
 }
 
-function addOrderToDB(order){return new Promise((res,rej)=>{const tx=db.transaction('orders','readwrite');tx.objectStore('orders').add(order);tx.oncomplete=()=>res(true);tx.onerror=e=>rej(e.target.error);});}
-function getAllOrders(){return new Promise((res,rej)=>{const tx=db.transaction('orders','readonly');const s=tx.objectStore('orders');const req=s.getAll();req.onsuccess=()=>res(req.result||[]);req.onerror=e=>rej(e.target.error);});}
+/* ---------------- UI: init/render ---------------- */
+document.addEventListener('DOMContentLoaded', () => {
+  // Hide reports & handover tabs on POS startup
+  $('tab-reports').style.display = 'none';
+  $('tab-handover').style.display = 'none';
 
-function renderCategories() {
-  const catEl = document.getElementById('categoryList');
-  catEl.innerHTML = '';
+  // Set default handover date to today
+  const today = new Date().toISOString().slice(0,10);
+  $('handoverDate').value = today;
 
-  const cats = [...new Set(MENU_ITEMS.map(i => i.category))];
-
-  // “All” button
-  const all = document.createElement('div');
-  all.className = 'category';
-  all.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" fill="#FFD700"><path d="M12 2l2.4 7.2H22l-6 4.4 2.4 7.2L12 16.4l-6.4 4.4L8 13.6 2 9.2h7.6z"/></svg> All`;
-  all.onclick = () => renderMenu();
-  catEl.appendChild(all);
-
-  cats.forEach(c => {
-    const d = document.createElement('div');
-    d.className = 'category';
-    const icon = CATEGORY_SVGS[c] || '';
-    d.innerHTML = `${icon} <span>${c}</span>`;
-    d.onclick = () => renderMenu(MENU_ITEMS.filter(i => i.category === c));
-    catEl.appendChild(d);
-  });
-}
-function renderMenu(items=MENU_ITEMS){const c=document.getElementById('menuItems');c.innerHTML='';items.forEach(it=>{const e=document.createElement('div');e.className='menu-item';e.innerHTML=`<span>${it.name}</span><span>₨${it.price}</span>`;e.onclick=()=>addToCart(it);c.appendChild(e);});}
-function filterMenu(){const q=document.getElementById('search').value.toLowerCase();const f=MENU_ITEMS.filter(i=>i.name.toLowerCase().includes(q)||i.category.toLowerCase().includes(q));renderMenu(f);}
-function addToCart(it){const ex=currentCart.find(x=>x.name===it.name);if(ex)ex.qty++;else currentCart.push({...it,qty:1});updateReceipt();}
-function updateReceipt(){const meta=document.getElementById('receipt-meta');const body=document.getElementById('receipt-body');const tbl=document.getElementById('receipt-items');const tot=document.getElementById('receipt-total');const tval=document.getElementById('receipt-total-value');const pay=document.getElementById('receipt-payment');
-if(!currentCart.length){meta.textContent='No items';tbl.style.display=tot.style.display=pay.style.display='none';return;}
-meta.textContent=new Date().toLocaleString();tbl.style.display=tot.style.display=pay.style.display='block';
-body.innerHTML='';let total=0;currentCart.forEach(it=>{total+=it.price*it.qty;const r=document.createElement('tr');r.innerHTML=`<td>${it.name}</td><td>${it.qty}</td><td>${it.price*it.qty}</td>`;body.appendChild(r);});
-tval.textContent='₨'+total;pay.textContent='Total: ₨'+total;}
-function onPaymentTypeChange(){const t=document.getElementById('paymentType').value;document.getElementById('cashReceivedLabel').style.display=t==='Cash'?'flex':'none';updateChange();}
-function updateChange(){const t=document.getElementById('paymentType').value;if(t!=='Cash')return document.getElementById('changeValue').textContent='₨0';let cash=parseFloat(document.getElementById('cashReceived').value||0);let total=currentCart.reduce((a,b)=>a+b.price*b.qty,0);let change=cash-total;if(change<0)change=0;document.getElementById('changeValue').textContent='₨'+change;}
-function saveOrder(){if(!currentCart.length)return alert('Cart empty');let order={id:Date.now(),cashier:document.getElementById('cashier').value,payment:document.getElementById('paymentType').value,items:currentCart,date:new Date().toLocaleString(),total:currentCart.reduce((a,b)=>a+b.price*b.qty,0)};addOrderToDB(order).then(()=>{alert('Order saved');clearCart();}).catch(e=>alert('DB error '+e));}
-function clearCart(){currentCart=[];updateReceipt();}
-function printReceipt(){
-  if(!currentCart.length) return alert('Cart empty');
-
-  // 👇 Save order automatically before printing
-  let order = {
-    id: Date.now(),
-    cashier: document.getElementById('cashier').value,
-    payment: document.getElementById('paymentType').value,
-    items: currentCart,
-    date: new Date().toLocaleString(),
-    total: currentCart.reduce((a,b)=>a+b.price*b.qty,0)
-  };
-
-  addOrderToDB(order)
-    .then(() => {
-      console.log('Order auto-saved before print');
-
-      // 👇 Now print as before
-      const r = document.getElementById('receipt').cloneNode(true);
-      r.id = 'printableReceipt';
-      document.body.appendChild(r);
-      window.print();
-      r.remove();
-
-      // Optionally clear cart after print
-      clearCart();
-    })
-    .catch(e => alert('DB error ' + e));
-}
-function exportPDF(){if(!currentCart.length)return alert('Cart empty');const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:'mm',format:[80,200]});doc.setFont('courier','normal');doc.text('BUNKER LUXURY',30,10);let y=20;currentCart.forEach(it=>{doc.text(`${it.name} x${it.qty} - ₨${it.price*it.qty}`,4,y);y+=6;});y+=4;doc.text('Total ₨'+currentCart.reduce((a,b)=>a+b.price*b.qty,0),4,y);doc.save('receipt.pdf');}
-function switchTab(tab){if(tab==='report'){document.getElementById('pos-content').style.display='none';document.getElementById('report-section').style.display='block';document.getElementById('tab-pos').classList.remove('active');document.getElementById('tab-report').classList.add('active');renderReport();}else{document.getElementById('pos-content').style.display='flex';document.getElementById('report-section').style.display='none';document.getElementById('tab-pos').classList.add('active');document.getElementById('tab-report').classList.remove('active');}}
-async function renderReport() {
-  const orders = await getAllOrders();
-  const type = document.getElementById('reportType').value;
-  const cashier = document.getElementById('reportCashier').value;
-  const item = document.getElementById('reportItem').value.toLowerCase();
-  const cat = document.getElementById('reportCategory').value.toLowerCase();
-  const s = document.getElementById('startDate').value;
-  const e = document.getElementById('endDate').value;
-
-  let f = orders.filter(o =>
-    (!cashier || o.cashier === cashier) &&
-    (!s || new Date(o.date) >= new Date(s)) &&
-    (!e || new Date(o.date) <= new Date(e))
-  );
-
-  if (item)
-    f = f.filter(o => o.items.some(i => i.name.toLowerCase().includes(item)));
-  if (cat)
-    f = f.filter(o => o.items.some(i => i.category.toLowerCase().includes(cat)));
-
-  let out = document.getElementById('report-output');
-  out.innerHTML = '';
-
-  if (!f.length) {
-    out.textContent = 'No records';
-    return;
-  }
-
-  // === ALL ===
-  if (type === 'all') {
-    let html = '<table class="receipt-items"><tr><th>Date</th><th>Cashier</th><th>Total</th></tr>';
-    f.forEach(o => html += `<tr><td>${o.date}</td><td>${o.cashier}</td><td>₨${o.total}</td></tr>`);
-    html += '</table>';
-    out.innerHTML = html;
-  }
-
-  // === BY CASHIER ===
-  else if (type === 'cashier') {
-    let g = {};
-    f.forEach(o => g[o.cashier] = (g[o.cashier] || 0) + o.total);
-    out.innerHTML = '<table class="receipt-items"><tr><th>Cashier</th><th>Total</th></tr>' +
-      Object.entries(g).map(([k, v]) => `<tr><td>${k}</td><td>₨${v}</td></tr>`).join('') +
-      '</table>';
-  }
-
-  // === BY ITEM (Now with Qty) ===
-  else if (type === 'item') {
-    let g = {};
-    f.forEach(o => o.items.forEach(i => {
-      if (!g[i.name]) g[i.name] = { total: 0, qty: 0 };
-      g[i.name].total += i.price * i.qty;
-      g[i.name].qty += i.qty;
-    }));
-    out.innerHTML = '<table class="receipt-items"><tr><th>Item</th><th>Qty</th><th>Total</th></tr>' +
-      Object.entries(g).map(([name, val]) =>
-        `<tr><td>${name}</td><td>${val.qty}</td><td>₨${val.total}</td></tr>`
-      ).join('') + '</table>';
-  }
-
-  // === BY CATEGORY (Now with Qty) ===
-  else if (type === 'category') {
-    let g = {};
-    f.forEach(o => o.items.forEach(i => {
-      if (!g[i.category]) g[i.category] = { total: 0, qty: 0 };
-      g[i.category].total += i.price * i.qty;
-      g[i.category].qty += i.qty;
-    }));
-    out.innerHTML = '<table class="receipt-items"><tr><th>Category</th><th>Qty</th><th>Total</th></tr>' +
-      Object.entries(g).map(([cat, val]) =>
-        `<tr><td>${cat}</td><td>${val.qty}</td><td>₨${val.total}</td></tr>`
-      ).join('') + '</table>';
-  }
-
-  // === BY DATE ===
-  else if (type === 'date') {
-    let g = {};
-    f.forEach(o => {
-      let d = o.date.split(',')[0];
-      g[d] = (g[d] || 0) + o.total;
-    });
-    out.innerHTML = '<table class="receipt-items"><tr><th>Date</th><th>Total</th></tr>' +
-      Object.entries(g).map(([d, v]) =>
-        `<tr><td>${d}</td><td>₨${v}</td></tr>`
-      ).join('') + '</table>';
-  }
-}
-
-async function renderDashboard() {
-  const orders = await getAllOrders();  // 🔹 fix: fetch orders first
-
-  let totalOrders = orders.length;
-  let totalCash = 0;
-  let totalOnline = 0;
-
-  let cashierSales = {};
-  let itemSales = {};
-
-  orders.forEach(order => {
-    let orderTotal = order.items.reduce((sum, i) => sum + i.price * i.qty, 0);
-
-    // Payment totals
-    if (order.payment === "Cash") totalCash += orderTotal;
-    else if (order.payment === "Online") totalOnline += orderTotal;
-
-    // Cashier totals
-    cashierSales[order.cashier] = (cashierSales[order.cashier] || 0) + orderTotal;
-
-    // Item totals
-    order.items.forEach(i => {
-      itemSales[i.name] = (itemSales[i.name] || 0) + i.qty;
-    });
-  });
-
-  document.getElementById("totalOrders").textContent = totalOrders;
-  document.getElementById("totalCash").textContent = `₨${totalCash}`;
-  document.getElementById("totalOnline").textContent = `₨${totalOnline}`;
-
-  // Top cashier
-  document.getElementById("topCashier").textContent =
-    Object.keys(cashierSales).length
-      ? Object.entries(cashierSales).sort((a,b)=>b[1]-a[1])[0][0]
-      : "-";
-
-  // Top item
-  document.getElementById("topItem").textContent =
-    Object.keys(itemSales).length
-      ? Object.entries(itemSales).sort((a,b)=>b[1]-a[1])[0][0]
-      : "-";
-}
-
-// ✅ call after DB is ready
-openDB().then(() => {
-  renderCategories();
+  // Initialize POS UI
+  initCategories();
   renderMenu();
-  updateReceipt();
-  renderDashboard(); // ✅ safe now
+  renderCart();
+
+  // Start realtime listeners
+  startRealtimeOrders();
+  startRealtimeHandovers();
+
+  // Initial render (reports + handover)
+  renderReports();
+  renderHandoverReport();
+
+  // Auto filter listeners
+  $('handoverDate').addEventListener('change', renderHandoverReport);
+  $('handoverShift').addEventListener('change', renderHandoverReport);
 });
 
-// ⚡ Auto-refresh dashboard + reports every 5 seconds
-setInterval(() => {
-  renderDashboard();
-  if (document.getElementById("report-section").style.display === "block") {
-    renderReport();
+
+function initCategories(){
+  const cats=[...new Set(MENU_ITEMS.map(i=>i.category))].sort();
+  const sel=$('categorySelect'); const reportSel=$('reportCategory');
+  sel.innerHTML = '<option value="">All Categories</option>';
+  reportSel.innerHTML = '<option value="">All Categories</option>';
+  cats.forEach(c=>{
+    const o=document.createElement('option'); o.textContent=c; o.value=c;
+    sel.appendChild(o); reportSel.appendChild(o.cloneNode(true));
+  });
+}
+
+function renderMenu(){
+  const q=$('search').value.toLowerCase(), cat=$('categorySelect').value, c=$('menuItems');
+  c.innerHTML='';
+  MENU_ITEMS.filter(i=>(!cat||i.category===cat)&&(i.name.toLowerCase().includes(q))).forEach(it=>{
+    const div=document.createElement('div'); div.className='menu-item';
+    const catClass = 'category-' + it.category.replace(/\s/g,'\\ ');
+    div.innerHTML=`
+      <div class="category-label ${catClass}">${it.category}</div>
+      <div style="font-weight:bold;font-size:14px;margin-top:8px;">${it.name}</div>
+      <div style="margin-top:6px;font-weight:bold;color:gold;">₨${it.price}</div>
+      <button style="margin-top:6px;" onclick="addToCart('${it.name.replace(/'/g,"\\'")}','${it.price}','${it.category}')">ADD</button>
+    `;
+    c.appendChild(div);
+  });
+}
+
+/* ---------------- CART ---------------- */
+window.addToCart = function(name,price,category){
+  const i = CART.find(x=>x.name===name);
+  if(i) i.qty++;
+  else CART.push({name,price:+price,qty:1,category});
+  renderCart();
+};
+
+function setQty(i,v){ if(v<=0) CART.splice(i,1); else CART[i].qty=+v; renderCart(); }
+function clearCart(){ if(confirm('Clear cart?')){ CART=[]; renderCart(); } }
+
+function renderCart(){
+  const tb=$('receipt-body'); tb.innerHTML=''; let total=0;
+  CART.forEach((it,i)=>{
+    total+=it.price*it.qty;
+    tb.innerHTML+=`<tr><td>${it.name}</td><td><input type="number" value="${it.qty}" min="1" onchange="setQty(${i},this.value)" style="width:50px"></td><td>${currency(it.price*it.qty)}</td></tr>`;
+  });
+  $('receipt-total-value').textContent = currency(total);
+  updateChange();
+}
+
+/* ---------------- PAYMENT helpers ---------------- */
+function onPaymentTypeChange(){
+  const t=$('paymentType').value;
+  $('cashReceivedLabel').style.display = t==='Cash' ? 'flex' : 'none';
+  if(t!=='Cash') $('cashReceived').value = 0;
+  updateChange();
+}
+function updateChange(){
+  const total = Number($('receipt-total-value').textContent.replace(/[₨,]/g,''))||0;
+  const cash = +($('cashReceived').value||0);
+  $('changeValue').textContent = currency(Math.max(0,cash-total));
+}
+
+/* ---------------- Local storage helpers ---------------- */
+function loadLocalOrders(){ return JSON.parse(localStorage.getItem(ORDERS_KEY)||'[]'); }
+function saveLocalOrders(arr){ localStorage.setItem(ORDERS_KEY, JSON.stringify(arr)); }
+function loadLocalHandovers(){ return JSON.parse(localStorage.getItem(HANDOVERS_KEY)||'[]'); }
+function saveLocalHandovers(arr){ localStorage.setItem(HANDOVERS_KEY, JSON.stringify(arr)); }
+
+/* ---------------- FIRESTORE: Realtime listeners ---------------- */
+
+function startRealtimeOrders(){
+  try {
+    const q = query(collection(db, "orders"), orderBy("date", "desc"));
+    onSnapshot(q, snapshot=>{
+      const orders = snapshot.docs.map(d=>d.data());
+      // save to local for offline usage & fast local queries
+      // convert serverTimestamp sentinel for safe local storage: map createdAt to ISO if present
+      const safe = orders.map(o => ({...o, createdAt: (o.createdAt && o.createdAt.toDate) ? o.createdAt.toDate().toISOString() : o.createdAt}));
+      saveLocalOrders(safe);
+      // update UI
+      renderReports();
+      console.log(`🛰️ Orders updated from Firestore (${orders.length})`);
+    }, err=>{
+      console.error("Realtime orders error:", err);
+    });
+  } catch (e) {
+    console.error("startRealtimeOrders failed:", e);
   }
-}, 5000);
+}
+
+function startRealtimeHandovers(){
+  try {
+    const q = query(collection(db, "handovers"), orderBy("date", "desc"));
+    onSnapshot(q, snapshot=>{
+      const handovers = snapshot.docs.map(d=>d.data());
+      const safe = handovers.map(h => ({...h, createdAt: (h.createdAt && h.createdAt.toDate) ? h.createdAt.toDate().toISOString() : h.createdAt}));
+      saveLocalHandovers(safe);
+      renderHandoverReport();
+      console.log(`🛰️ Handovers updated from Firestore (${handovers.length})`);
+    }, err=>{
+      console.error("Realtime handovers error:", err);
+    });
+  } catch (e) {
+    console.error("startRealtimeHandovers failed:", e);
+  }
+}
+
+/* ---------------- Save Order (local + cloud + print) ---------------- */
+window.saveOrder = async function () {
+  if (!CART.length) return alert("⚠️ Cart empty");
+
+  const now = new Date();
+
+  const orderForCloud = {
+    id: "ORD" + now.getTime(),
+    date: now.toISOString(),
+    cashier: $("cashier")?.value || "Unknown",
+    payment: $("paymentType")?.value || "Cash",
+    shift: $("orderShift")?.value || "Manual",
+    items: CART.map(i => ({ ...i })),
+    total: CART.reduce((a, b) => a + b.price * b.qty, 0),
+    createdAt: serverTimestamp()
+  };
+
+  try {
+    // Save to Firestore
+    await addDoc(collection(db, "orders"), orderForCloud);
+    console.log("✅ Order saved to Firebase");
+
+    // Print safely (with data)
+    printReceipt(orderForCloud);
+
+    // Clear cart AFTER printing completes
+    setTimeout(() => {
+      clearCart();
+    }, 1000);
+
+    alert("✅ Order saved and printed!");
+  } catch (err) {
+    console.error("❌ Error saving order:", err);
+    alert("Error saving order: " + err.message);
+  }
 
 
-  </script>
+
+
+  // Local-friendly copy (no Firestore sentinel)
+  const orderForLocal = {...orderForCloud, createdAt: now.toISOString() };
+
+  // 1️⃣ Local save
+  const localOrders = loadLocalOrders();
+  localOrders.unshift(orderForLocal);
+  saveLocalOrders(localOrders);
+
+  // 2️⃣ Print immediately using the saved local order data (so print won't depend on CART if we clear)
+  await printReceipt(orderForLocal);
+
+  // 3️⃣ Clear cart + redraw
+  CART.length = 0;
+  requestAnimationFrame(renderCart);
+
+  // 4️⃣ Background Firebase sync (attempt to add cloud copy with serverTimestamp sentinel)
+  addDoc(collection(db, "orders"), orderForCloud)
+    .then(()=> console.log("✅ Synced to Firebase"))
+    .catch(err => console.error("⚠️ Cloud save failed:", err));
+
+  // 5️⃣ Instant user feedback
+  toast("Order saved locally ⚡ (cloud syncing...)", "success");
+};
+
+/* ---------------- Save handover (local + cloud) ---------------- */
+window.addHandover = async function(){
+  const cashier = $('handoverCashier').value.trim();
+  const receiver = $('handoverReceiver').value.trim();
+  const amount = +$('handoverAmount').value || 0;
+  const shift = $('handoverShift').value || 'Unknown';
+  const dateISO = new Date().toISOString();
+
+  if(!cashier || !receiver || !amount) return alert('Fill all fields');
+
+  const hCloud = { date: dateISO, cashier, receiver, amount, shift, createdAt: serverTimestamp() };
+  const hLocal = { ...hCloud, createdAt: dateISO };
+
+  const local = loadLocalHandovers();
+  local.unshift(hLocal);
+  saveLocalHandovers(local);
+
+  try {
+    await addDoc(collection(db, "handovers"), hCloud);
+    alert("Handover saved ✔");
+  } catch (e) {
+    console.error("Firestore addHandover error:", e);
+    alert("Handover saved locally (cloud error). Will sync when online.");
+  }
+
+  // clear inputs
+  $('handoverCashier').value=''; $('handoverReceiver').value=''; $('handoverAmount').value='';
+  renderHandoverReport();
+};
+
+/* ---------------- Reports rendering (uses localStorage which is kept in sync by realtime) ---------------- */
+async function renderReports(){
+  const orders = loadLocalOrders();
+  const df = $('reportDate').value,
+        sf = $('reportShift').value,
+        pf = $('reportPayment').value,
+        cf = $('reportCategory').value,
+        q  = $('reportItem').value.toLowerCase(),
+        view = $('viewMode').value;
+
+  const tb = $('reportBody');
+  const orderTb = $('orderContainer');
+  tb.innerHTML = '';
+  orderTb.innerHTML = '';
+  let tq = 0, ts = 0;
+
+  const sortedOrders = [...orders].sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  if(view === 'item'){
+    $('itemView').style.display = 'block';
+    $('orderView').style.display = 'none';
+
+    const itemMap = new Map();
+
+    sortedOrders.forEach(o=>{
+      if(df && o.date.slice(0,10)!==df) return;
+      if(sf && o.shift!==sf) return;
+      if(pf && o.payment!==pf) return;
+
+      const date = o.date.slice(0,10);
+      const time = formatDateTime(o.date).split(' ')[1] || '';
+
+      (o.items||[]).forEach(it=>{
+        if(cf && it.category!==cf) return;
+        if(q && !it.name.toLowerCase().includes(q)) return;
+
+        const key = it.category + "|" + it.name + "|" + (o.payment||'') + "|" + (o.shift||'');
+        if(!itemMap.has(key)){
+          itemMap.set(key,{
+            date,
+            time,
+            shift: o.shift,
+            category: it.category,
+            name: it.name,
+            qty: 0,
+            total: 0,
+            payment: o.payment
+          });
+        }
+        const rec = itemMap.get(key);
+        rec.qty += it.qty;
+        rec.total += it.price * it.qty;
+      });
+    });
+
+    const aggregated = Array.from(itemMap.values())
+      .sort((a,b)=> a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
+
+    aggregated.forEach(it=>{
+      tb.innerHTML += `
+        <tr>
+          <td>${it.date}</td>
+          <td>${it.time}</td>
+          <td>${it.shift}</td>
+          <td>${it.category}</td>
+          <td>${it.name}</td>
+          <td>${it.qty}</td>
+          <td>${currency(it.total)}</td>
+          <td>${it.payment}</td>
+        </tr>`;
+      tq += it.qty;
+      ts += it.total;
+    });
+
+    $('totalQty').textContent = tq;
+    $('totalSales').textContent = currency(ts);
+
+  } else {
+    $('itemView').style.display = 'none';
+    $('orderView').style.display = 'block';
+
+    sortedOrders.forEach(o=>{
+      if(df && o.date.slice(0,10)!==df) return;
+      if(sf && o.shift!==sf) return;
+      if(pf && o.payment!==pf) return;
+
+      const date = o.date.slice(0,10);
+      const time = formatDateTime(o.date).split(' ')[1] || '';
+      const items = (o.items||[]).map(i=>`${i.name} x${i.qty}`).join(', ');
+      orderTb.innerHTML += `
+        <tr>
+          <td>${o.id}</td>
+          <td>${date}</td>
+          <td>${time}</td>
+          <td>${o.cashier||''}</td>
+          <td>${items}</td>
+          <td>${currency(o.total||0)}</td>
+          <td>${o.payment}</td>
+          <td>${o.shift}</td>
+        </tr>`;
+    });
+  }
+}
+/* ---------------- Shift Handling ---------------- */
+
+// Set default shift (restore previous one if saved)
+window.addEventListener("DOMContentLoaded", () => {
+  const shiftSelect = document.getElementById("orderShift");
+  if (!shiftSelect) return;
+
+  // Restore saved shift from localStorage
+  const savedShift = localStorage.getItem("bunkerShift");
+  if (savedShift) {
+    shiftSelect.value = savedShift;
+  }
+
+  // Save shift on change
+  shiftSelect.addEventListener("change", () => {
+    const selectedShift = shiftSelect.value;
+    localStorage.setItem("bunkerShift", selectedShift);
+    console.log("🕒 Shift set to:", selectedShift);
+  });
+});
+
+
+/* ---------------- Handover render/export (AUTO FILTER + LIVE UPDATE) ---------------- */
+function renderHandoverReport() {
+  const list = loadLocalHandovers();
+  const tb = $('handoverBody');
+  tb.innerHTML = '';
+  let t = 0;
+
+  const selectedDate = $('handoverDate').value;
+  const selectedShift = $('handoverShift').value;
+
+  const filtered = list
+    .filter(h => !selectedDate || h.date.slice(0,10) === selectedDate)
+    .filter(h => !selectedShift || h.shift === selectedShift);
+
+  filtered.forEach(h => {
+    tb.innerHTML += `
+      <tr>
+        <td>${formatDateTime(h.date)}</td>
+        <td>${h.cashier}</td>
+        <td>${h.receiver}</td>
+        <td>${currency(h.amount)}</td>
+        <td>${h.shift}</td>
+      </tr>`;
+    t += h.amount;
+  });
+
+  $('handoverTotal').textContent = currency(t);
+}
+
+/* ---------------- Export handover as CSV ---------------- */
+function exportHandoverCSV() {
+  const selectedDate = $('handoverDate').value;
+  const selectedShift = $('handoverShift').value;
+
+  const list = loadLocalHandovers()
+    .filter(h => !selectedDate || h.date.slice(0,10) === selectedDate)
+    .filter(h => !selectedShift || h.shift === selectedShift);
+
+  if (!list.length) return alert('No data');
+
+  let csv = 'Date,Cashier,Receiver,Amount,Shift\n';
+  list.forEach(h =>
+    csv += `${formatDateTime(h.date)},${h.cashier},${h.receiver},${h.amount},${h.shift}\n`
+  );
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'handover.csv';
+  a.click();
+}
+
+
+/* ---------------- UI helpers: tab switch ---------------- */
+function switchTab(tab,btn){
+  document.querySelectorAll('.topnav button').forEach(b=>b.classList.remove('active'));
+  btn?.classList.add('active');
+  document.querySelectorAll('[id^="tab-"]').forEach(d=>d.style.display='none');
+  $('tab-'+tab).style.display='block';
+  if(tab==='reports') renderReports();
+  if(tab==='handover') renderHandoverReport();
+}
+window.switchTab = switchTab;
+
+/* ---------------- Print Receipt (works with optional pre-built order) ---------------- */
+async function printReceipt(orderParam = null) {
+  // If no order param, require CART items
+  if(!orderParam && !CART.length) return alert('Cart empty');
+
+  const now = new Date();
+  const orderId = orderParam?.id || ('ORD' + Date.now());
+  const date = orderParam?.date ? new Date(orderParam.date) : now;
+  const formattedDate = formatDateTime(date);
+  const items = orderParam?.items || CART;
+  const total = orderParam?.total ?? CART.reduce((s, i) => s + i.price * i.qty, 0);
+  const cashier = orderParam?.cashier || $('cashier')?.value || 'Unknown';
+  const payment = orderParam?.payment || $('paymentType')?.value || 'Cash';
+ const shift = orderParam?.shift || document.getElementById('orderShift')?.value || 'Manual';
+
+
+  // ----- Local save (ensure no serverTimestamp sentinel stored locally) -----
+  const orderForLocal = {
+    id: orderId,
+    date: date.toISOString(),
+    cashier,
+    payment,
+    shift,
+    items: items.map(i=>({ ...i })),
+    total,
+    createdAt: date.toISOString()
+  };
+
+  // push to local storage (avoid duplication if same id exists)
+  const local = loadLocalOrders();
+  if(!local.find(o=>o.id===orderForLocal.id)) {
+    local.unshift(orderForLocal);
+    saveLocalOrders(local);
+  }
+
+  // ----- Try saving to Firebase ----- (non-blocking)
+  const orderForCloud = {...orderForLocal, createdAt: serverTimestamp()};
+  try {
+    await addDoc(collection(db, "orders"), orderForCloud);
+    console.log("✅ Order saved to Firestore");
+  } catch (e) {
+    console.error("⚠️ Firestore error:", e);
+    // keep going — local copy exists
+  }
+
+  // ----- Print view -----
+  let html = `
+  <html>
+  <head>
+    <title>Receipt</title>
+    <style>
+      body { font-family: monospace; font-size: 12px; width: 230px; margin: 0; padding: 2px; }
+      h2, h3, .bold { font-weight: bold; text-align: center; margin: 2px 0; }
+      .line { display: flex; justify-content: space-between; margin: 1px 0; font-weight: bold; }
+      hr { border: none; border-top: 1px dashed #000; margin: 2px 0; }
+      .center { text-align: center; font-weight: bold; }
+      .spacer { line-height: 10px; }
+      .decor { text-align:center; font-weight:bold; letter-spacing:1px; }
+      .item { display:flex; justify-content:space-between; }
+    </style>
+  </head>
+  <body>
+    <h2>🖤 BUNKER CAFE 🖤</h2>
+    <p class="center">${formattedDate}</p>
+    <p class="center" style="font-size:14px;">ORDER ID: ${orderId}</p>
+    <hr>
+  `;
+
+  items.forEach(item => {
+    html += `
+      <div style="display:flex;justify-content:space-between;"><div>${item.name}</div><div>₨${(item.price*item.qty).toLocaleString('en-PK')}</div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;"><div>Qty: ${item.qty}</div><div>₨${item.price}</div></div>
+    `;
+  });
+
+  html += `
+    <hr>
+    <div style="display:flex;justify-content:space-between;font-weight:bold;"><span>Total</span><span>₨${total.toLocaleString('en-PK')}</span></div>
+    <hr>
+    <p class="center">Cashier: ${cashier}</p>
+    <p class="center">Payment: ${payment}</p>
+    <p class="center">Shift: ${shift}</p>
+    <hr>
+    <p class="center">Thank You! Visit Again!</p>
+  </body>
+  </html>
+  `;
+
+  const w = window.open('', '_blank', 'width=250,height=600');
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  w.print();
+  w.close();
+
+  // If we printed using the live CART, clear it now
+  if(!orderParam) {
+    CART = [];
+    renderCart();
+  }
+}
+
+window.printReceipt = printReceipt;
+
+/* ---------------- Expose global functions used by HTML ---------------- */
+window.setQty = setQty;
+window.clearCart = clearCart;
+window.onPaymentTypeChange = onPaymentTypeChange;
+window.updateChange = updateChange;
+window.renderMenu = renderMenu;
+window.saveLocalOrders = saveLocalOrders;
+window.saveLocalHandovers = saveLocalHandovers;
+window.renderReports = renderReports;
+window.renderHandoverReport = renderHandoverReport;
+window.addHandover = addHandover;
+window.exportHandoverCSV = exportHandoverCSV;
+
+// Simple toast fallback
+function toast(msg, type='info') {
+  try {
+    const el = document.createElement('div');
+    el.textContent = msg;
+    el.style.position = 'fixed';
+    el.style.right = '12px';
+    el.style.bottom = '12px';
+    el.style.background = type==='success' ? 'green' : 'gray';
+    el.style.color = 'white';
+    el.style.padding = '8px 12px';
+    el.style.borderRadius = '6px';
+    el.style.zIndex = 9999;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1);
+  } catch(e){ console.log(msg); }
+}
+window.printReceipt = printReceipt;
+window.saveOrder = saveOrder;
+
+
+</script>
+
 </body>
 </html>
